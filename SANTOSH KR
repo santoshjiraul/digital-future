@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map App</title>
+    
+    <!-- Leaflet CSS (Required for the map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorig 
+    <style>
+        /* Basic Reset and Body Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Main App Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000; /* Ensure header is on top */
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Content Area with Map and Sidebar */
+        .content {
+            display: flex;
+            flex: 1; /* Takes up remaining space */
+            overflow: hidden;
+        }
+
+        /* Map Container */
+        #map {
+            flex: 1; /* Takes up available space */
+            height: 100%;
+            min-height: 300px; /* Ensure map is visible on very small screens */
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background-color: #f4f4f9;
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+        }
+
+        #clear-all-btn {
+            padding: 0.4rem 0.8rem;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        #clear-all-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Marker List */
+        #marker-list {
+            list-style-type: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        #marker-list li {
+            background-color: white;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #e0e0e0;
+        }
+
+        #marker-list li:hover {
+            background-color: #e8eaf6;
+            transform: translateY(-2px);
+        }
+
+        #marker-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: 40%;
+                border-left: none;
+                border-top: 1px solid #ddd;
+            }
+            #map {
+                height: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Interactive Map App</h1>
+            <p>Click on the map to add a marker.</p>
+        </header>
+        <main class="content">
+            <!-- The map will be rendered inside this div -->
+            <div id="map"></div>
+            
+            <!-- Sidebar for the list of markers -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>My Markers</h3>
+                    <button id="clear-all-btn">Clear All</button>
+                </div>
+                <ul id="marker-list">
+                    <!-- Markers will be dynamically added here by JavaScript -->
+                </ul>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Leaflet JavaScript (Required for the map to work) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <!-- ========================================= -->
+    <!-- ========= JAVASCRIPT LOGIC ============== -->
+    <!-- ========================================= -->
+    <script>
+        // Wait for the DOM to be fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Initialize the Map ---
+            // Set the initial view coordinates (latitude, longitude) and zoom level
+            const map = L.map('map').setView([48.8566, 2.3522], 5); // Centered on France
+
+            // --- 2. Add the Tile Layer (the map image) ---
+            // We use OpenStreetMap's free tiles. Attribution is required.
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // --- 3. State Management ---
+            // An array to hold all the marker objects
+            const markers = [];
+            // Get references to our HTML elements
+            const markerListUl = document.getElementById('marker-list');
+            const clearAllBtn = document.getElementById('clear-all-btn');
+
+            // --- 4. Function to add a marker to the map and list ---
+            function addMarker(lat, lng) {
+                // Create a marker at the given latitude and longitude
+                const marker = L.marker([lat, lng]).addTo(map);
+
+                // Create a popup for the marker
+                const popupContent = `
+                    <b>Marker Location</b><br>
+                    Latitude: ${lat.toFixed(4)}<br>
+                    Longitude: ${lng.toFixed(4)}
+                `;
+                marker.bindPopup(popupContent);
+
+                // Add the marker object to our array
+                markers.push(marker);
+
+                // Create a corresponding list item in the sidebar
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <b>Marker #${markers.length}</b><br>
+                    Lat: ${lat.toFixed(2)}, Lng: ${lng.toFixed(2)}
+                `;
+                
+                // Add a click event to the list item to open the marker's popup
+                listItem.addEventListener('click', () => {
+                    map.setView([lat, lng], 15); // Pan and zoom to the marker
+                    marker.openPopup(); // Open the popup
+                });
+
+                // Add the list item to the sidebar
+                markerListUl.appendChild(listItem);
+            }
+
+            // --- 5. Event Listener for Map Clicks ---
+            map.on('click', (e) => {
+                // e.latlng contains the latitude and longitude of the click
+                const { lat, lng } = e.latlng;
+                addMarker(lat, lng);
+            });
+
+            // --- 6. Event Listener for "Clear All" Button ---
+            clearAllBtn.addEventListener('click', () => {
+                // Remove each marker from the map
+                markers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+
+                // Clear the markers array and the list in the HTML
+                markers.length = 0; // A fast way to empty an array
+                markerListUl.innerHTML = ''; // Clear all list items
+            });
+
+        });
+    </script>
+
+</body>
+</html>
