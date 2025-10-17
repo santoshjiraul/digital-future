@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopsy - Your Online Shopping Store</title>
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    
+    <style>
+       
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --dark-color: #2c3e50;
+            --light-color: #f4f4f9;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        
+        .main-header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: var(--dark-color);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px 15px;
+            background-color: #f9f9f9;
+        }
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: none;
+            padding: 5px;
+            width: 200px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+            position: relative;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/seed/shopsyhero/1500/600.jpg') no-repeat center center/cover;
+            height: 60vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #ff5252;
+        }
+
+        
+        .section-title {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 2.2rem;
+            color: var(--dark-color);
+        }
+
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 15px;
+        }
+        .product-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .add-to-cart {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+        .product-card:hover .add-to-cart {
+            opacity: 1;
+            bottom: 100px;
+        }
+
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+        .category-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* --- Footer --- */
+        .main-footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 40px;
+        }
+        .social-links a {
+            color: white;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+
+       
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 2000;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+       
+        @media (max-width: 768px) {
+            .main-nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .search-bar input {
+                width: 150px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="main-header">
+        <nav class="main-nav container">
+            <a href="#" class="logo">VITUS SHOPING</a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#categories">Categories</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1>Big Sale Is On!</h1>
+            <p>Up to 50% off on selected items. Don't miss out!</p>
+            <a href="#products" class="btn">Shop Now</a>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="products-grid" id="productGrid">
+                
+            </div>
+        </section>
+
+        
+        <section id="categories" class="container">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <i class="fas fa-tshirt"></i>
+                    <h4>Fashion</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-laptop"></i>
+                    <h4>Electronics</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-couch"></i>
+                    <h4>Home</h4>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-football-ball"></i>
+                    <h4>Sports</h4>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer" id="contact">
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p>&copy; 2024 Shopsy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Data ---
+            const products = [
+                { id: 1, name: 'Stylish Sunglasses', price: 1299, image: 'https://picsum.photos/seed/sunglasses/250/200.jpg' },
+                { id: 2, name: 'Leather Wallet', price: 899, image: 'https://picsum.photos/seed/wallet/250/200.jpg' },
+                { id: 3, name: 'Running Shoes', price: 3499, image: 'https://picsum.photos/seed/shoes/250/200.jpg' },
+                { id: 4, name: 'Backpack', price: 1999, image: 'https://picsum.photos/seed/backpack/250/200.jpg' },
+                { id: 5, name: 'Smartphone', price: 25999, image: 'https://picsum.photos/seed/phone/250/200.jpg' },
+                { id: 6, name: 'Headphones', price: 2499, image: 'https://picsum.photos/seed/headphones/250/200.jpg' },
+            ];
+
+            // --- DOM Elements ---
+            const productGrid = document.getElementById('productGrid');
+            const cartCount = document.getElementById('cartCount');
+            const toast = document.getElementById('toast');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+
+            let cartItems = 0;
+
+            // --- Functions ---
+            function renderProducts(productsToRender) {
+                productGrid.innerHTML = ''; // Clear existing products
+                productsToRender.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p class="product-price">₹${product.price}</p>
+                        </div>
+                        <button class="add-to-cart" data-id="${product.id}" data-name="${product.name}">Add to Cart</button>
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+                attachAddToCartListeners();
+            }
+
+            function attachAddToCartListeners() {
+                const addButtons = document.querySelectorAll('.add-to-cart');
+                addButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent card click if any
+                        const productName = button.getAttribute('data-name');
+                        addToCart(productName);
+                    });
+                });
+            }
+
+            function addToCart(productName) {
+                cartItems++;
+                cartCount.textContent = cartItems;
+                showToast(`${productName} added to cart!`);
+            }
+
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function handleSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredProducts = products.filter(product =>
+                    product.name.toLowerCase().includes(searchTerm)
+                );
+                renderProducts(filteredProducts);
+                if (filteredProducts.length === 0) {
+                    productGrid.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1;">No products found.</p>';
+                }
+            }
+
+            // --- Initial Render & Event Listeners ---
+            renderProducts(products);
+
+            searchBtn.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
