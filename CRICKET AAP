@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Cricket Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .game-container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .team-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .team-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .team-box:hover {
+            transform: translateY(-5px);
+            border-color: #ffd93d;
+            box-shadow: 0 10px 20px rgba(255, 217, 61, 0.3);
+        }
+
+        .team-box.selected {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .team-logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .game-area {
+            display: none;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .score-board, .game-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .cricket-field {
+            background: #2d5016;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pitch {
+            width: 200px;
+            height: 100px;
+            background: #8b4513;
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .batsman {
+            width: 40px;
+            height: 60px;
+            background: #333;
+            border-radius: 20px 20px 0 0;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+        }
+
+        .ball {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            animation: ballMove 1s ease-out;
+        }
+
+        @keyframes ballMove {
+            0% {
+                top: 20px;
+                opacity: 1;
+            }
+            100% {
+                top: 120px;
+                opacity: 0;
+            }
+        }
+
+        .score-display {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .over-display {
+            font-size: 1.5em;
+            color: #ffd93d;
+            margin: 10px 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-bat {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+            color: white;
+        }
+
+        .btn-bowl {
+            background: linear-gradient(45deg, #4ecdc4, #44a3aa);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .shot-selection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .shot-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shot-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .commentary {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .commentary-text {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #ffd93d;
+            padding-left: 10px;
+        }
+
+        .winner-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .winner-content {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .winner-content h2 {
+            font-size: 2.5em;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .team-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🏏 IPL Cricket Game 🏏</h1>
+            <p>अपनी पसंदीदा टीम चुनें और खेलें!</p>
+        </div>
+
+        <div class="team-selection" id="teamSelection">
+            <div class="team-box" onclick="selectTeam('CSK', 'Chennai Super Kings', '🔵')">
+                <div class="team-logo">🔵</div>
+                <h3>Chennai Super Kings</h3>
+                <p>CSK</p>
+            </div>
+            <div class="team-box" onclick="selectTeam('MI', 'Mumbai Indians', '🔴')">
+                <div class="team-logo">🔴</div>
+                <h3>Mumbai Indians</h3>
+                <p>MI</p>
+            </div>
+            <div class="team-box" onclick="selectTeam('RCB', 'Royal Challengers Bangalore', '🟡')">
+                <div class="team-logo">🟡</div>
+                <h3>Royal Challengers Bangalore</h3>
+                <p>RCB</p>
+            </div>
+            <div class="team-box" onclick="selectTeam('KKR', 'Kolkata Knight Riders', '🟣')">
+                <div class="team-logo">🟣</div>
+                <h3>Kolkata Knight Riders</h3>
+                <p>KKR</p>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="score-board">
+                <h3>स्कोरबोर्ड</h3>
+                <div class="score-display">
+                    <div>स्कोर: <span id="score">0</span></div>
+                    <div>विकेट: <span id="wickets">0</span></div>
+                    <div>ओवर: <span id="overs">0.0</span></div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div>बैटिंग</div>
+                        <div id="battingTeam">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>बोलिंग</div>
+                        <div id="bowlingTeam">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>रन रेट</div>
+                        <div id="runRate">0.0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>रिमेनिंग</div>
+                        <div id="remaining">20 ओवर</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cricket-field">
+                <div class="pitch">
+                    <div class="batsman" id="batsman"></div>
+                    <div class="ball" id="ball"></div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-bat" onclick="bat()" id="batBtn">बैट करें</button>
+                    <button class="btn btn-bowl" onclick="bowl()" id="bowlBtn">गेंद फेंकें</button>
+                </div>
+                <div class="shot-selection" id="shotSelection">
+                    <button class="shot-btn" onclick="playShot('drive')">ड्राइव</button>
+                    <button class="shot-btn" onclick="playShot('pull')">पुल</button>
+                    <button class="shot-btn" onclick="playShot('cut')">कट</button>
+                    <button class="shot-btn" onclick="playShot('sweep')">स्वीप</button>
+                    <button class="shot-btn" onclick="playShot('hook')">हुक</button>
+                    <button class="shot-btn" onclick="playShot('defense')">डिफेंस</button>
+                </div>
+            </div>
+
+            <div class="game-info">
+                <h3>गेम जानकारी</h3>
+                <div class="over-display">
+                    <div>कुल ओवर: <span id="totalOvers">20</span></div>
+                    <div>बैटिंग स्ट्राइक: <span id="strike">टीम 1</span></div>
+                </div>
+                <div class="commentary" id="commentary">
+                    <div class="commentary-text">गेम शुरू हुआ!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="winnerModal">
+        <div class="winner-content">
+            <h2 id="winnerText">🏆 माहित! 🏆</h2>
+            <p id="winnerDetails"></p>
+            <button class="btn btn-bat" onclick="resetGame()">नया गेम शुरू करें</button>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            team1: null,
+            team2: null,
+            battingTeam: null,
+            bowlingTeam: null,
+            score: 0,
+            wickets: 0,
+            overs: 0,
+            balls: 0,
+            currentBall: 0,
+            gameOver: false,
+            innings: 1,
+            inningsScores: []
+        };
+
+        const commentaryMessages = {
+            drive: [
+                "शानदार ड्राइव!",
+                "बेहतरीन शॉट!",
+                "रन लेने का अच्छा मौका!",
+                "बल्लेबाज ने अच्छा खेला!"
+            ],
+            pull: [
+                "डेडली पुल!",
+                "उसे छोड़ दिया!",
+                "बल्लेबाज ने पूरी तरह से खेला!",
+                "बड़े शॉट!"
+            ],
+            cut: [
+                "शानदार कट!",
+                "फाइन एज पर!",
+                "उसे बाहर भेजा!",
+                "बेहतरीन हिट!"
+            ],
+            sweep: [
+                "स्मार्ट स्वीप!",
+                "गूगली स्वीप!",
+                "बल्लेबाज ने स्मार्ट खेला!",
+                "अच्छा रन!"
+            ],
+            hook: [
+                "डेंजरस हुक!",
+                "जोखिम भरा शॉट!",
+                "उसे नियंत्रित कर लिया!",
+                "बड़ा रन!"
+            ],
+            defense: [
+                "सुरक्षात्मक खेल!",
+                "अच्छा बचाव!",
+                "बल्लेबाज सुरक्षित है!",
+                "धैर्यवान खेल!"
+            ]
+        };
+
+        function selectTeam(teamCode, teamName, logo) {
+            if (!gameState.team1) {
+                gameState.team1 = { code: teamCode, name: teamName, logo: logo };
+                event.target.classList.add('selected');
+                addCommentary(`${teamName} ने टॉस जीता और पहले बैट करेगा!`);
+            } else if (!gameState.team2 && gameState.team1.code !== teamCode) {
+                gameState.team2 = { code: teamCode, name: teamName, logo: logo };
+                event.target.classList.add('selected');
+                startGame();
+            }
+        }
+
+        function startGame() {
+            gameState.battingTeam = gameState.team1;
+            gameState.bowlingTeam = gameState.team2;
+            document.getElementById('teamSelection').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'grid';
+            document.getElementById('battingTeam').textContent = gameState.battingTeam.name;
+            document.getElementById('bowlingTeam').textContent = gameState.bowlingTeam.name;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('wickets').textContent = gameState.wickets;
+            document.getElementById('overs').textContent = `${gameState.overs}.${gameState.balls}`;
+            document.getElementById('runRate').textContent = (gameState.overs > 0 ? (gameState.score / gameState.overs).toFixed(2) : '0.00');
+            document.getElementById('remaining').textContent = `${20 - gameState.overs} ओवर`;
+            document.getElementById('strike').textContent = gameState.battingTeam.name;
+        }
+
+        function bat() {
+            if (gameState.gameOver) return;
+            document.getElementById('batBtn').disabled = true;
+            document.getElementById('shotSelection').style.display = 'grid';
+        }
+
+        function bowl() {
+            if (gameState.gameOver) return;
+            document.getElementById('bowlBtn').disabled = true;
+            simulateBowling();
+        }
+
+        function playShot(shotType) {
+            document.getElementById('shotSelection').style.display = 'none';
+            document.getElementById('batBtn').disabled = false;
+            document.getElementById('bowlBtn').disabled = false;
+            
+            const ball = document.getElementById('ball');
+            ball.style.display = 'block';
+            
+            setTimeout(() => {
+                ball.style.display = 'none';
+                executeShot(shotType);
+            }, 1000);
+        }
+
+        function executeShot(shotType) {
+            const outcomes = {
+                drive: [0, 1, 2, 3, 4, 6, 'W'],
+                pull: [0, 1, 2, 4, 6, 'W', 'W'],
+                cut: [0, 1, 2, 4, 'W'],
+                sweep: [0, 1, 2, 3, 'W'],
+                hook: [0, 1, 4, 6, 'W', 'W'],
+                defense: [0, 1, 2]
+            };
+
+            const possibleOutcomes = outcomes[shotType];
+            const outcome = possibleOutcomes[Math.floor(Math.random() * possibleOutcomes.length)];
+
+            if (outcome === 'W') {
+                gameState.wickets++;
+                addCommentary(`विकेट! ${gameState.battingTeam.name} का बल्लेबाज आउट हो गया।`);
+                if (gameState.wickets === 10 || gameState.overs === 20) {
+                    endInnings();
+                } else {
+                    addCommentary(`नए बल्लेबाज मैदान पर आए।`);
+                }
+            } else {
+                gameState.score += outcome;
+                addCommentary(`${outcome} रन! ${shotType} शॉट से।`);
+                if (outcome === 4 || outcome === 6) {
+                    addCommentary(`शानदार ${outcome}! बड़ा शॉट!`);
+                }
+            }
+
+            gameState.currentBall++;
+            if (gameState.currentBall === 6) {
+                gameState.currentBall = 0;
+                gameState.overs++;
+                if (gameState.overs === 20) {
+                    endInnings();
+                } else {
+                    addCommentary(`${gameState.overs} ओवर पूरे हुए।`);
+                }
+            }
+
+            updateDisplay();
+        }
+
+        function simulateBowling() {
+            const ball = document.getElementById('ball');
+            ball.style.display = 'block';
+            
+            setTimeout(() => {
+                ball.style.display = 'none';
+                const runs = Math.floor(Math.random() * 7);
+                if (runs === 6) {
+                    gameState.score += runs;
+                    addCommentary(`नॉ बॉल! ${runs} रन!`);
+                } else if (runs === 0) {
+                    addCommentary(`डॉट बॉल!`);
+                } else {
+                    gameState.score += runs;
+                    addCommentary(`${runs} रन!`);
+                }
+                
+                gameState.currentBall++;
+                if (gameState.currentBall === 6) {
+                    gameState.currentBall = 0;
+                    gameState.overs++;
+                    if (gameState.overs === 20) {
+                        endInnings();
+                    } else {
+                        addCommentary(`${gameState.overs} ओवर पूरे हुए।`);
+                    }
+                }
+                updateDisplay();
+            }, 1000);
+        }
+
+        function endInnings() {
+            gameState.inningsScores.push({
+                team: gameState.battingTeam.name,
+                score: gameState.score,
+                wickets: gameState.wickets,
+                overs: gameState.overs
+            });
+
+            if (gameState.innings === 1) {
+                gameState.innings = 2;
+                gameState.battingTeam = gameState.team2;
+                gameState.bowlingTeam = gameState.team1;
+                gameState.score = 0;
+                gameState.wickets = 0;
+                gameState.overs = 0;
+                gameState.currentBall = 0;
+                gameState.gameOver = false;
+                document.getElementById('battingTeam').textContent = gameState.battingTeam.name;
+                document.getElementById('bowlingTeam').textContent = gameState.bowlingTeam.name;
+                addCommentary(`दूसरी पारी शुरू! ${gameState.battingTeam.name} बैट कर रहा है।`);
+                updateDisplay();
+            } else {
+                gameState.gameOver = true;
+                showWinner();
+            }
+        }
+
+        function showWinner() {
+            const team1Score = gameState.inningsScores[0].score;
+            const team2Score = gameState.inningsScores[1].score;
+            
+            let winner, details;
+            if (team1Score > team2Score) {
+                winner = gameState.team1.name;
+                details = `${gameState.team1.name} ने ${team1Score} रन से जीती!`;
+            } else if (team2Score > team1Score) {
+                winner = gameState.team2.name;
+                details = `${gameState.team2.name} ने ${team2Score} रन से जीती!`;
+            } else {
+                winner = "ड्राअ";
+                details = "मैच ड्राअ हुआ!";
+            }
+            
+            document.getElementById('winnerText').textContent = `🏆 ${winner} जीता! 🏆`;
+            document.getElementById('winnerDetails').textContent = details;
+            document.getElementById('winnerModal').style.display = 'flex';
+        }
+
+        function resetGame() {
+            gameState = {
+                team1: null,
+                team2: null,
+                battingTeam: null,
+                bowlingTeam: null,
+                score: 0,
+                wickets: 0,
+                overs: 0,
+                balls: 0,
+                currentBall: 0,
+                gameOver: false,
+                innings: 1,
+                inningsScores: []
+            };
+            
+            document.getElementById('teamSelection').style.display = 'grid';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('winnerModal').style.display = 'none';
+            document.querySelectorAll('.team-box').forEach(box => box.classList.remove('selected'));
+            document.getElementById('commentary').innerHTML = '<div class="commentary-text">गेम शुरू हुआ!</div>';
+        }
+
+        function addCommentary(message) {
+            const commentaryDiv = document.getElementById('commentary');
+            const comment = document.createElement('div');
+            comment.className = 'commentary-text';
+            comment.textContent = message;
+            commentaryDiv.appendChild(comment);
+            commentaryDiv.scrollTop = commentaryDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
