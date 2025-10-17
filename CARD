@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANTRA - वेब डेवलपमेंट डेमो</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ec4899;
+            --dark-bg: #1e293b;
+            --light-bg: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Interactive Section */
+        .interactive-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .counter-display {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .counter {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Color Picker Section */
+        .color-picker-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .color-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* Task List */
+        .task-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .task-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .task-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .task-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Weather Widget */
+        .weather-widget {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .weather-display {
+            font-size: 3rem;
+            margin: 2rem 0;
+        }
+
+        .weather-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 5rem 1rem 2rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">MANTRA</div>
+            <ul class="nav-links">
+                <li><a href="#home">होम</a></li>
+                <li><a href="#features">फीचर्स</a></li>
+                <li><a href="#interactive">इंटरैक्टिव</a></li>
+                <li><a href="#tasks">टास्क</a></li>
+                <li><a href="#weather">वेदर</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1>वेब डेवलपमेंट का नया मानत्र</h1>
+            <p>HTML, CSS और JavaScript का शानदार कंबीनेशन</p>
+        </section>
+
+        <!-- Features Cards -->
+        <section class="cards-grid" id="features">
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h3>मॉडर्न डिज़ाइन</h3>
+                <p>रेस्पॉन्सिव और आकर्षक डिज़ाइन जो सभी डिवाइस पर परफेक्ट लुक देता है</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>तेज़ परफॉर्मेंस</h3>
+                <p>ऑप्टिमाइज़्ड कोड और एनिमेशन जो बेहतर यूजर एक्सपीरियंस देते हैं</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔧</div>
+                <h3>इंटरैक्टिव फीचर्स</h3>
+                <p>जावास्क्रिप्ट के साथ बनाए गए इंटरैक्टिव तत्व जो यूजर इंगेजमेंट बढ़ाते हैं</p>
+            </div>
+        </section>
+
+        <!-- Interactive Counter -->
+        <section class="interactive-section" id="interactive">
+            <h2 style="text-align: center; margin-bottom: 2rem;">इंटरैक्टिव काउंटर</h2>
+            <div class="counter-display">
+                <div class="counter" id="counter">0</div>
+                <p>क्लिक करके नंबर बढ़ाएं</p>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="incrementCounter()">बढ़ाएं (+1)</button>
+                <button class="btn btn-primary" onclick="incrementCounter(5)">बढ़ाएं (+5)</button>
+                <button class="btn btn-secondary" onclick="resetCounter()">रीसेट</button>
+            </div>
+        </section>
+
+        <!-- Color Picker -->
+        <section class="color-picker-section">
+            <h2 style="text-align: center; margin-bottom: 2rem;">रंग चुनें</h2>
+            <div class="color-picker">
+                <div class="color-option active" style="background: linear-gradient(45deg, #667eea, #764ba2);" onclick="changeTheme(this)"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #f093fb, #f5576c);" onclick="changeTheme(this)"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #4facfe, #00f2fe);" onclick="changeTheme(this)"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #43e97b, #38f9d7);" onclick="changeTheme(this)"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #fa709a, #fee140);" onclick="changeTheme(this)"></div>
+            </div>
+            <p style="text-align: center; color: var(--text-light);">थीम रंग बदलने के लिए क्लिक करें</p>
+        </section>
+
+        <!-- Task List -->
+        <section class="task-section" id="tasks">
+            <h2 style="text-align: center; margin-bottom: 2rem;">टास्क लिस्ट</h2>
+            <div class="task-input">
+                <input type="text" id="taskInput" placeholder="नया टास्क जोड़ें..." onkeypress="handleTaskKeyPress(event)">
+                <button class="btn btn-primary" onclick="addTask()">जोड़ें</button>
+            </div>
+            <ul class="task-list" id="taskList"></ul>
+        </section>
+
+        <!-- Weather Widget -->
+        <section class="weather-widget" id="weather">
+            <h2 style="margin-bottom: 1rem;">वेदर विजेट</h2>
+            <div class="weather-icon" id="weatherIcon">☀️</div>
+            <div class="weather-display" id="weatherDisplay">25°C</div>
+            <p id="weatherDescription">सुनहरा दिन</p>
+            <button class="btn btn-primary" onclick="refreshWeather()">रिफ्रेश करें</button>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 MANTRA - वेब डेवलपमेंट डेमो</p>
+    </footer>
+
+    <script>
+        // Counter functionality
+        let counter = 0;
+        function incrementCounter(value = 1) {
+            counter += value;
+            document.getElementById('counter').textContent = counter;
+            animateCounter();
+        }
+
+        function resetCounter() {
+            counter = 0;
+            document.getElementById('counter').textContent = counter;
+            animateCounter();
+        }
+
+        function animateCounter() {
+            const counterElement = document.getElementById('counter');
+            counterElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                counterElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Theme changer
+        function changeTheme(element) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            ];
+            
+            document.body.style.background = gradients[Array.from(element.parentElement.children).indexOf(element)];
+        }
+
+        // Task list functionality
+        let tasks = [];
+        
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskText = input.value.trim();
+            
+            if (taskText) {
+                tasks.push({
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false
+                });
+                input.value = '';
+                renderTasks();
+            }
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <span onclick="toggleTask(${task.id})" style="cursor: pointer;">
+                        ${task.text}
+                    </span>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">हटाएं</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        function handleTaskKeyPress(event) {
+            if (event.key === 'Enter') {
+                addTask();
+            }
+        }
+
+        // Weather widget
+        const weatherData = [
+            { icon: '☀️', temp: '25°C', desc: 'सुनहरा दिन' },
+            { icon: '🌧️', temp: '18°C', desc: 'बारिश का दिन' },
+            { icon: '⛅', temp: '22°C', desc: 'आंशिक बादल' },
+            { icon: '🌤️', temp: '28°C', desc: 'सुखद मौसम' },
+            { icon: '🌩️', temp: '20°C', desc: 'गरज-चमक' }
+        ];
+
+        function refreshWeather() {
+            const weatherElement = document.getElementById('weatherIcon');
+            const displayElement = document.getElementById('weatherDisplay');
+            const descElement = document.getElementById('weatherDescription');
+            
+            // Show loading
+            weatherElement.innerHTML = '<div class="loader"></div>';
+            
+            setTimeout(() => {
+                const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
+                weatherElement.textContent = randomWeather.icon;
+                displayElement.textContent = randomWeather.temp;
+                descElement.textContent = randomWeather.desc;
+            }, 1000);
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'var(--shadow)';
+            }
+        });
+
+        // Initialize weather on load
+        window.addEventListener('load', () => {
+            refreshWeather();
+        });
+    </script>
+</body>
+</html>
