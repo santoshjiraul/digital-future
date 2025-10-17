@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARD Aap - Online Shopping</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f3f3;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #131921;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        .logo img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            color: white;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        .location i {
+            margin-right: 5px;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            display: flex;
+            margin-right: 20px;
+        }
+
+        .search-dropdown {
+            background-color: #f3f3f3;
+            border: none;
+            padding: 8px 5px;
+            border-radius: 4px 0 0 4px;
+            cursor: pointer;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: none;
+            outline: none;
+        }
+
+        .search-button {
+            background-color: #febd69;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+        }
+
+        .nav-item span:first-child {
+            font-size: 12px;
+        }
+
+        .nav-item span:last-child {
+            font-weight: bold;
+        }
+
+        .cart {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            background-color: #f08804;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            background-color: #232f3e;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .menu-toggle i {
+            margin-right: 5px;
+        }
+
+        .menu-items {
+            display: flex;
+            list-style: none;
+            margin-left: 20px;
+        }
+
+        .menu-items li {
+            margin-right: 20px;
+        }
+
+        .menu-items a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 0;
+            display: block;
+        }
+
+        .menu-items a:hover {
+            border-bottom: 2px solid white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            position: relative;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-button {
+            background-color: #f08804;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero-button:hover {
+            background-color: #e47911;
+            transform: scale(1.05);
+        }
+
+        /* Product Section */
+        .product-section {
+            padding: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #131921;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #f08804;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #cc0c39;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .product-image {
+            height: 200px;
+            width: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #131921;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stars {
+            color: #f08804;
+            margin-right: 5px;
+        }
+
+        .rating-count {
+            color: #007185;
+            font-size: 14px;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .currency {
+            font-size: 14px;
+            margin-right: 2px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .original-price {
+            font-size: 16px;
+            color: #565959;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+
+        .discount {
+            color: #cc0c39;
+            font-weight: bold;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-to-cart {
+            flex: 1;
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #111;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background-color: #e4b448;
+        }
+
+        .buy-now {
+            flex: 1;
+            background-color: #ffa41c;
+            border: 1px solid #bf8c0a;
+            color: #111;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .buy-now:hover {
+            background-color: #f08804;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #232f3e;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #f3f3f3;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            background-color: #131921;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background-color: #131921;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h2 {
+            font-size: 20px;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #131921;
+        }
+
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #131921;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-btn {
+            background-color: #f3f3f3;
+            border: 1px solid #ddd;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .cart-footer {
+            background-color: #f3f3f3;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #111;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: #e4b448;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .menu-items {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .hero-content p {
+                font-size: 18px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="logo-text">CARD Aap</span>
+        </a>
+        
+        <div class="location">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+                <div>Deliver </div>
+                <div>ALL INDIDA DELIVERY</div>
+            </div>
+        </div>
+        
+        <div class="search-container">
+            <select class="search-dropdown">
+                <option>All</option>
+                <option>Electronics</option>
+                <option>Fashion</option>
+                <option>Home</option>
+                <option>Beauty</option>
+            </select>
+            <input type="text" class="search-input" placeholder="Search Amazon Aap">
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <nav class="header-nav">
+            <a href="#" class="nav-item">
+                <span>Hello, sign in</span>
+                <span>Account & Lists</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span>Returns</span>
+                <span>& Orders</span>
+            </a>
+            <a href="#" class="nav-item cart" onclick="toggleCart()">
+                <span>Your Cart</span>
+                <span>
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+            All
+        </div>
+        <ul class="menu-items">
+            <li><a href="#">Today's Deals</a></li>
+            <li><a href="#">Customer Service</a></li>
+            <li><a href="#">Registry</a></li>
+            <li><a href="#">Gift Cards</a></li>
+            <li><a href="#">Sell</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to CARD Aap</h1>
+            <p>Your one-stop destination for all your shopping needs</p>
+            <button class="hero-button">Shop Now</button>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="product-section">
+        <h2 class="section-title">
+            <i class="fas fa-fire"></i>
+            Today's Deals
+        </h2>
+        <div class="product-grid" id="dealsGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <section class="product-section">
+        <h2 class="section-title">
+            <i class="fas fa-star"></i>
+            Top Rated Products
+        </h2>
+        <div class="product-grid" id="topRatedGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <section class="product-section">
+        <h2 class="section-title">
+            <i class="fas fa-mobile-alt"></i>
+            Electronics
+        </h2>
+        <div class="product-grid" id="electronicsGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Get to Know Us</h3>
+                <ul>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">About CARD aap</a></li>
+                    <li><a href="#">Investor Relations</a></li>
+                    <li><a href="#">CARD Aap Devices</a></li>
+                    <li><a href="#">CARD Aap Science</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Make Money with Us</h3>
+                <ul>
+                    <li><a href="#">Sell products on CARD Aap</a></li>
+                    <li><a href="#">Sell on CARD Aap Business</a></li>
+                    <li><a href="#">Sell apps on CARD Aap</a></li>
+                    <li><a href="#">Become an Affiliate</a></li>
+                    <li><a href="#">Advertise Your Products</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Amazon Aap Payment Products</h3>
+                <ul>
+                    <li><a href="#">CARD Aap Business Card</a></li>
+                    <li><a href="#">Shop with Points</a></li>
+                    <li><a href="#">Reload Your Balance</a></li>
+                    <li><a href="#">Amazon Aap Currency Converter</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Let Us Help You</h3>
+                <ul>
+                    <li><a href="#">Your Account</a></li>
+                    <li><a href="#">Your Orders</a></li>
+                    <li><a href="#">Shipping Rates & Policies</a></li>
+                    <li><a href="#">Returns & Replacements</a></li>
+                    <li><a href="#">Manage Your Content and Devices</a></li>
+                    <li><a href="#">Amazon Aap Assistant</a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025-2026, CARD Aap.com, Inc. or its affiliates</p>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically loaded here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₹0.00</span>
+            </div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+    <script>
+        // Sample product data
+        const products = {
+            deals: [
+                {
+                    id: 1,
+                    title: "Wireless Bluetooth Headphones with Noise Cancellation",
+                    price: 1999,
+                    originalPrice: 3999,
+                    discount: "50% off",
+                    rating: 4.5,
+                    ratingCount: 1245,
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 2,
+                    title: "Smart Watch with Fitness Tracker and Heart Rate Monitor",
+                    price: 2999,
+                    originalPrice: 4999,
+                    discount: "40% off",
+                    rating: 4.3,
+                    ratingCount: 876,
+                    image: "https://images.unsplash.com/photo-1544117519-31a4b719223d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 3,
+                    title: "Portable Power Bank 20000mAh with Fast Charging",
+                    price: 1499,
+                    originalPrice: 2499,
+                    discount: "40% off",
+                    rating: 4.7,
+                    ratingCount: 2103,
+                    image: "https://images.unsplash.com/photo-1590995541060-9a4fd9c2d8a0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 4,
+                    title: "Wireless Mouse with USB Receiver and Ergonomic Design",
+                    price: 799,
+                    originalPrice: 1299,
+                    discount: "38% off",
+                    rating: 4.2,
+                    ratingCount: 543,
+                    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                }
+            ],
+            topRated: [
+                {
+                    id: 5,
+                    title: "Premium Quality Leather Wallet for Men",
+                    price: 1299,
+                    originalPrice: 1999,
+                    discount: "35% off",
+                    rating: 4.8,
+                    ratingCount: 3210,
+                    image: "https://images.unsplash.com/photo-1627123424594-4240e7ec6b0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 6,
+                    title: "Stainless Steel Water Bottle 1L with Insulation",
+                    price: 899,
+                    originalPrice: 1499,
+                    discount: "40% off",
+                    rating: 4.6,
+                    ratingCount: 1876,
+                    image: "https://images.unsplash.com/photo-1602143407151-7111542dd6ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 7,
+                    title: "Yoga Mat Non-Slip with Carrying Strap",
+                    price: 799,
+                    originalPrice: 1299,
+                    discount: "38% off",
+                    rating: 4.7,
+                    ratingCount: 987,
+                    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 8,
+                    title: "Ceramic Cookware Set Non-Stick 5-Piece",
+                    price: 3999,
+                    originalPrice: 6999,
+                    discount: "43% off",
+                    rating: 4.5,
+                    ratingCount: 654,
+                    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                }
+            ],
+            electronics: [
+                {
+                    id: 9,
+                    title: "4K Ultra HD Smart TV 43-inch with Voice Remote",
+                    price: 24999,
+                    originalPrice: 34999,
+                    discount: "29% off",
+                    rating: 4.4,
+                    ratingCount: 4321,
+                    image: "https://images.unsplash.com/photo-1593784991095-2058a6838d5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 10,
+                    title: "Laptop Backpack with USB Charging Port",
+                    price: 1499,
+                    originalPrice: 2499,
+                    discount: "40% off",
+                    rating: 4.3,
+                    ratingCount: 1876,
+                    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 11,
+                    title: "Wireless Earbuds with Charging Case",
+                    price: 2999,
+                    originalPrice: 4999,
+                    discount: "40% off",
+                    rating: 4.2,
+                    ratingCount: 3210,
+                    image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                },
+                {
+                    id: 12,
+                    title: "Smart Home Security Camera with Night Vision",
+                    price: 3999,
+                    originalPrice: 6999,
+                    discount: "43% off",
+                    rating: 4.5,
+                    ratingCount: 1543,
+                    image: "https://images.unsplash.com/photo-1591169296074-3ae677c11c6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                }
+            ]
+        };
+
+        // Cart state
+        let cart = [];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load products
+            loadProducts('deals', 'dealsGrid');
+            loadProducts('topRated', 'topRatedGrid');
+            loadProducts('electronics', 'electronicsGrid');
+            
+            // Load cart from localStorage
+            const savedCart = localStorage.getItem('amazonAapCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
+        });
+
+        // Load products
+        function loadProducts(category, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            products[category].forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <div class="product-badge">${product.discount}</div>
+                    <img src="${product.image}" alt="${product.title}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <div class="product-rating">
+                            <div class="stars">${generateStars(product.rating)}</div>
+                            <span class="rating-count">${product.ratingCount}</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="currency">₹</span>
+                            <span class="price">${product.price}</span>
+                            <span class="original-price">₹${product.originalPrice}</span>
+                            <span class="discount">${product.discount}</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                            <button class="buy-now" onclick="buyNow(${product.id})">Buy Now</button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+
+        // Generate star rating
+        function generateStars(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Add product to cart
+        function addToCart(productId) {
+            // Find product in all categories
+            let product = null;
+            for (const category in products) {
+                product = products[category].find(p => p.id === productId);
+                if (product) break;
+            }
+            
+            if (!product) return;
+            
+            // Check if product already in cart
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            // Save cart to localStorage
+            localStorage.setItem('amazonAapCart', JSON.stringify(cart));
+            
+            // Update cart UI
+            updateCartUI();
+            
+            // Show notification
+            showNotification('Added to Cart', `${product.title} has been added to your cart.`, 'success');
+        }
+
+        // Buy now
+        function buyNow(productId) {
+            addToCart(productId);
+            toggleCart();
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            // Update cart count
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = cartCount;
+            
+            // Update cart items
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 20px;">Your cart is empty</p>';
+            } else {
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <h4 class="cart-item-title">${item.title}</h4>
+                            <div class="cart-item-price">₹${item.price}</div>
+                            <div class="cart-item-quantity">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    cartItemsContainer.appendChild(cartItem);
+                });
+            }
+            
+            // Update cart total
+            const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            document.getElementById('cartTotal').textContent = `₹${cartTotal.toFixed(2)}`;
+        }
+
+        // Update item quantity
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                item.quantity += change;
+                
+                if (item.quantity <= 0) {
+                    // Remove item from cart
+                    cart = cart.filter(item => item.id !== productId);
+                }
+                
+                // Save cart to localStorage
+                localStorage.setItem('amazonAapCart', JSON.stringify(cart));
+                
+                // Update cart UI
+                updateCartUI();
+            }
+        }
+
+        // Toggle cart sidebar
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('overlay');
+            
+            cartSidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Show notification
+        function showNotification(title, message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.backgroundColor = type === 'success' ? '#4caf50' : '#f44336';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 20px';
+            notification.style.borderRadius = '5px';
+            notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            notification.style.zIndex = '1001';
+            notification.style.minWidth = '300px';
+            notification.style.maxWidth = '400px';
+            
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+                <div>${message}</div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // Search functionality
+        document.querySelector('.search-button').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-input').value;
+            if (searchTerm) {
+                showNotification('Search', `Searching for "${searchTerm}"...`, 'success');
+            }
+        });
+
+        // Hero button functionality
+        document.querySelector('.hero-button').addEventListener('click', function() {
+            window.scrollTo({
+                top: document.querySelector('.product-section').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
