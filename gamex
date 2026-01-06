@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Voxel Craft - Minecraft & Roblox Style</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB; /* Sky Blue */
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        /* UI Overlay */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid black;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #instructions {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            pointer-events: auto;
+            margin: 0 auto;
+        }
+
+        #block-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .block-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .block-btn.active {
+            border-color: yellow;
+            box-shadow: 0 0 10px yellow;
+        }
+
+        /* Block Colors */
+        .grass { background: #567d46; }
+        .dirt { background: #8B4513; }
+        .stone { background: #808080; }
+        .wood { background: #A0522D; }
+        .lava { background: #ff4500; box-shadow: 0 0 5px red; }
+
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            background: #00d2ff;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        #stats {
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        /* Message Toast */
+        #message {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+    <!-- Three.js Library Load kar rahe hain -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- 3D Scene Container -->
+    <div id="canvas-container"></div>
+    <div id="crosshair"></div>
+
+    <!-- UI Overlay -->
+    <div id="ui-layer">
+        <div id="stats">Blocks: 0</div>
+        
+        <div id="message">Oho! Gir gaye. R key dabao reset karne ke liye.</div>
+
+        <div id="instructions" id="start-screen">
+            <h2>🎮 Voxel World Control</h2>
+            <p><strong>Click "Start Game"</strong> to play.</p>
+            <ul style="text-align: left; font-size: 0.9rem;">
+                <li><strong>W, A, S, D:</strong> Move (Chalein)</li>
+                <li><strong>Space:</strong> Jump (Udalein)</li>
+                <li><strong>Mouse Move:</strong> Look around (Dekhein)</li>
+                <li><strong>Left Click:</strong> Break Block (Todein)</li>
+                <li><strong>Right Click:</strong> Place Block (Lagayein)</li>
+            </ul>
+            <div style="margin-top: 10px;">Select Color:</div>
+            <div id="block-selector">
+                <div class="block-btn grass active" onclick="selectColor('grass', 0x567d46)"></div>
+                <div class="block-btn dirt" onclick="selectColor('dirt', 0x8B4513)"></div>
+                <div class="block-btn stone" onclick="selectColor('stone', 0x808080)"></div>
+                <div class="block-btn wood" onclick="selectColor('wood', 0xA0522D)"></div>
+            </div>
+            <button id="start-btn">START GAME</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SETUP THREE.JS ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky color
+        scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(50, 100, 50);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.left = -50;
+        dirLight.shadow.camera.right = 50;
+        dirLight.shadow.camera.top = 50;
+        dirLight.shadow.camera.bottom = -50;
+        scene.add(dirLight);
+
+        // --- VARIABLES ---
+        let moveForward = false;
+        let moveBackward = false;
+        let moveLeft = false;
+        let moveRight = false;
+        let canJump = false;
+        
+        let prevTime = performance.now();
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        
+        let selectedColor = 0x567d46;
+        let blockCount = 0;
+        
+        // --- PLAYER (Simple Physics) ---
+        camera.position.y = 2; // Player height
+        
+        // Raycaster for block interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        // --- WORLD GENERATION ---
+        const objects = []; // Store blocks for collision/interaction
+        const geometryBox = new THREE.BoxGeometry(1, 1, 1);
+
+        // Function to add block
+        function createBlock(x, y, z, color) {
+            const material = new THREE.MeshLambertMaterial({ color: color });
+            const cube = new THREE.Mesh(geometryBox, material);
+            cube.position.set(x, y, z);
+            cube.castShadow = true;
+            cube.receiveShadow = true;
+            scene.add(cube);
+            objects.push(cube);
+            updateStats();
+        }
+
+        // Generate Floor (Minecraft Grass)
+        const floorSize = 20;
+        for (let x = -floorSize; x < floorSize; x++) {
+            for (let z = -floorSize; z < floorSize; z++) {
+                createBlock(x, 0, z, 0x567d46); // Grass
+            }
+        }
+
+        // Generate Obstacles (Roblox Parkour Style)
+        for(let i=0; i<10; i++) {
+            let x = Math.floor(Math.random() * 10) + 5;
+            let z = Math.floor(Math.random() * 10) + 5;
+            let height = Math.floor(Math.random() * 3) + 1;
+            createBlock(x, height, z, 0xff0000); // Red obstacle
+        }
+
+        function updateStats() {
+            document.getElementById('stats').innerText = "World Blocks: " + objects.length;
+        }
+
+        // --- INPUT HANDLING ---
+        const startBtn = document.getElementById('start-btn');
+        const instructions = document.getElementById('instructions');
+
+        startBtn.addEventListener('click', () => {
+            document.body.requestPointerLock();
+        });
+
+        document.addEventListener('pointerlockchange', () => {
+            if (document.pointerLockElement === document.body) {
+                instructions.style.display = 'none';
+            } else {
+                instructions.style.display = 'block';
+                startBtn.innerText = "RESUME GAME";
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            switch (event.code) {
+                case 'ArrowUp':
+                case 'KeyW': moveForward = true; break;
+                case 'ArrowLeft':
+                case 'KeyA': moveLeft = true; break;
+                case 'ArrowDown':
+                case 'KeyS': moveBackward = true; break;
+                case 'ArrowRight':
+                case 'KeyD': moveRight = true; break;
+                case 'Space':
+                    if (canJump === true) velocity.y += 12; // Jump force
+                    canJump = false;
+                    break;
+                case 'KeyR': // Reset Player
+                    camera.position.set(0, 5, 0);
+                    velocity.set(0, 0, 0);
+                    document.getElementById('message').style.display = 'none';
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            switch (event.code) {
+                case 'ArrowUp':
+                case 'KeyW': moveForward = false; break;
+                case 'ArrowLeft':
+                case 'KeyA': moveLeft = false; break;
+                case 'ArrowDown':
+                case 'KeyS': moveBackward = false; break;
+                case 'ArrowRight':
+                case 'KeyD': moveRight = false; break;
+            }
+        });
+
+        // Mouse Movement for Camera Look
+        document.addEventListener('mousemove', (event) => {
+            if (document.pointerLockElement === document.body) {
+                const movementX = event.movementX || 0;
+                const movementY = event.movementY || 0;
+                
+                // Rotate Camera (Y axis for looking left/right)
+                camera.rotation.y -= movementX * 0.002;
+            }
+        });
+
+        // --- BLOCK INTERACTION (Minecraft Build/Break) ---
+        document.addEventListener('mousedown', (event) => {
+            if (document.pointerLockElement !== document.body) return;
+
+            // Center of screen
+            raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+            const intersects = raycaster.intersectObjects(objects);
+
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+                
+                // Left Click (0) = Break
+                if (event.button === 0) {
+                    // Don't delete the floor (y=0) to prevent falling forever in simple version
+                    if (intersect.object.position.y > 0) {
+                        scene.remove(intersect.object);
+                        objects.splice(objects.indexOf(intersect.object), 1);
+                        updateStats();
+                    }
+                }
+                
+                // Right Click (2) = Place
+                if (event.button === 2) {
+                    const voxel = new THREE.Mesh(geometryBox, new THREE.MeshLambertMaterial({ color: selectedColor }));
+                    // Place block adjacent to the face we clicked
+                    voxel.position.copy(intersect.object.position);
+                    voxel.position.add(intersect.face.normal);
+                    
+                    // Prevent placing block inside player
+                    const dist = voxel.position.distanceTo(camera.position);
+                    if (dist > 1.5) {
+                        scene.add(voxel);
+                        objects.push(voxel);
+                        updateStats();
+                    }
+                }
+            }
+        });
+
+        // Color Selector
+        function selectColor(name, colorCode) {
+            selectedColor = colorCode;
+            document.querySelectorAll('.block-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.' + name).classList.add('active');
+        }
+
+        // --- GAME LOOP & PHYSICS ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (document.pointerLockElement === document.body) {
+                const time = performance.now();
+                const delta = (time - prevTime) / 1000;
+
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+                velocity.y -= 30.0 * delta; // Gravity
+
+                direction.z = Number(moveForward) - Number(moveBackward);
+                direction.x = Number(moveRight) - Number(moveLeft);
+                direction.normalize(); // Ensure consistent speed in all directions
+
+                if (moveForward || moveBackward) velocity.z -= direction.z * 50.0 * delta; // Speed
+                if (moveLeft || moveRight) velocity.x -= direction.x * 50.0 * delta;
+
+                // Move Camera sideways/forward
+                camera.translateX(-velocity.x * delta);
+                camera.translateZ(-velocity.z * delta);
+                
+                // Apply Gravity
+                camera.position.y += velocity.y * delta;
+
+                // Simple Floor Collision (Prevent falling through y=0)
+                // For a real voxel game we need AABB collision, but this is a simple version
+                if (camera.position.y < 2.0) {
+                    velocity.y = 0;
+                    camera.position.y = 2.0;
+                    canJump = true;
+                } else {
+                    // Very simple check: if falling fast, assume in air
+                    if (velocity.y < -1) canJump = false;
+                }
+                
+                // Game Over Condition (Fell off world)
+                if (camera.position.y < -10) {
+                     document.getElementById('message').style.display = 'block';
+                }
+
+                prevTime = time;
+            } else {
+                prevTime = performance.now();
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>
