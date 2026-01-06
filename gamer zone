@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Game Hub - 2D & 3D</title>
+    <style>
+        /* --- GLOBAL CSS --- */
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --accent: #ff512f;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- UI COMPONENTS --- */
+        header {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--secondary);
+            z-index: 100;
+            position: relative;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-transform: uppercase; }
+        
+        button { cursor: pointer; padding: 0.6rem 1.2rem; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(45deg, var(--secondary), var(--primary)); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4); }
+        .btn-danger { background: var(--accent); color: white; }
+        .back-btn { background: transparent; border: 1px solid #666; color: #ccc; margin-bottom: 1rem; }
+
+        /* --- SECTIONS (SPA Logic) --- */
+        main { flex: 1; position: relative; }
+        
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+        .section.active { display: block; }
+        
+        /* Special styling for 3D view to fill screen if needed */
+        #voxel-view {
+            display: none; /* Controlled by JS */
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 0; z-index: 50;
+            background: black;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- AUTH & DASHBOARD --- */
+        .auth-container {
+            max-width: 400px; margin: 3rem auto; background: var(--card-bg); padding: 2rem; border-radius: 15px; text-align: center;
+        }
+        .form-group input { width: 100%; padding: 0.8rem; margin-bottom: 10px; border-radius: 5px; border: none; background: #0f3460; color: white; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .game-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .game-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .card-img { height: 120px; background: linear-gradient(45deg, #2b5876, #4e4376); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+        .card-content { padding: 1.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+        /* --- GAME 1: TIC TAC TOE --- */
+        .tictactoe-board { display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; margin: 20px auto; width: fit-content; }
+        .cell { width: 80px; height: 80px; background: #0f3460; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; border-radius: 5px; }
+        .cell.x { color: var(--accent); } .cell.o { color: var(--success); }
+
+        /* --- GAME 2: SNAKE --- */
+        canvas { background: #000; border: 2px solid var(--primary); border-radius: 5px; display: block; margin: 0 auto; }
+
+        /* --- GAME 3: MEMORY --- */
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 80px); gap: 10px; margin: 20px auto; }
+        .memory-card { width: 80px; height: 80px; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.5s; }
+        .memory-card.flip { transform: rotateY(180deg); }
+        .front-face, .back-face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 2rem; }
+        .front-face { background: var(--primary); } .back-face { background: var(--card-bg); border: 1px solid white; transform: rotateY(180deg); }
+
+        /* --- 3D VOXEL GAME UI --- */
+        #voxel-ui {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 20px;
+        }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; background: white; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid black; pointer-events: none; }
+        #voxel-menu { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 10px; text-align: center; pointer-events: auto; margin: auto; max-width: 400px; }
+        .block-btn { width: 30px; height: 30px; display: inline-block; margin: 5px; border: 2px solid white; cursor: pointer; }
+        .block-btn.active { border-color: yellow; box-shadow: 0 0 5px yellow; }
+        .b-grass { background: #567d46; } .b-dirt { background: #8B4513; } .b-stone { background: #808080; } .b-wood { background: #A0522D; }
+
+        /* Toast */
+        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; padding: 16px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); border-radius: 5px; z-index: 2000; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+    </style>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Super GameZone</div>
+        <div class="user-info" id="headerUserInfo" style="display: none;">
+            <span id="displayUsername" style="margin-right: 15px;">Player</span>
+            <button class="btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="toast">Notification</div>
+
+        <!-- VIEW: LOGIN -->
+        <section id="auth-view" class="section active">
+            <div class="auth-container">
+                <h2>Super Gamer Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group"><input type="text" id="username" placeholder="Username" required></div>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Login</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW: DASHBOARD -->
+        <section id="dashboard-view" class="section">
+            <h1 style="margin-bottom: 20px;">Select Game</h1>
+            <div class="dashboard-grid">
+                <!-- Game 1 -->
+                <div class="game-card">
+                    <div class="card-img">❌⭕</div>
+                    <div class="card-content">
+                        <h3>Tic Tac Toe</h3>
+                        <button class="btn-primary" onclick="showView('tictactoe-view')">Play</button>
+                    </div>
+                </div>
+                <!-- Game 2 -->
+                <div class="game-card">
+                    <div class="card-img">🐍</div>
+                    <div class="card-content">
+                        <h3>Snake</h3>
+                        <button class="btn-primary" onclick="showView('snake-view')">Play</button>
+                    </div>
+                </div>
+                <!-- Game 3 -->
+                <div class="game-card">
+                    <div class="card-img">🎴</div>
+                    <div class="card-content">
+                        <h3>Memory Match</h3>
+                        <button class="btn-primary" onclick="showView('memory-view')">Play</button>
+                    </div>
+                </div>
+                <!-- Game 4: 3D -->
+                <div class="game-card" style="border: 2px solid var(--accent);">
+                    <div class="card-img" style="background: linear-gradient(45deg, #ff4b1f, #ff9068);">🧱</div>
+                    <div class="card-content">
+                        <h3 style="color: var(--accent);">Voxel Craft 3D</h3>
+                        <p>Minecraft + Roblox Style</p>
+                        <button class="btn-primary" onclick="initVoxelGame(); showView('voxel-view')">Play 3D</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: TICTACTOE -->
+        <section id="tictactoe-view" class="section">
+            <button class="back-btn" onclick="showView('dashboard-view')">← Back</button>
+            <div style="text-align: center;">
+                <h2>Tic Tac Toe</h2>
+                <div id="ttt-status" style="margin: 20px;">Player X</div>
+                <div class="tictactoe-board" id="ttt-board"></div>
+                <button class="btn-primary" onclick="initTicTacToe()">Reset</button>
+            </div>
+        </section>
+
+        <!-- VIEW: SNAKE -->
+        <section id="snake-view" class="section">
+            <button class="back-btn" onclick="stopSnake(); showView('dashboard-view')">← Back</button>
+            <div style="text-align: center;">
+                <h2>Snake</h2>
+                <p>Score: <span id="snake-score">0</span></p>
+                <canvas id="snakeCanvas" width="300" height="300"></canvas>
+                <br><br>
+                <button class="btn-primary" onclick="startSnake()">Start</button>
+            </div>
+        </section>
+
+        <!-- VIEW: MEMORY -->
+        <section id="memory-view" class="section">
+            <button class="back-btn" onclick="showView('dashboard-view')">← Back</button>
+            <div style="text-align: center;">
+                <h2>Memory Match</h2>
+                <p>Moves: <span id="mem-moves">0</span></p>
+                <div class="memory-grid" id="mem-board"></div>
+                <br>
+                <button class="btn-primary" onclick="initMemory()">Reset</button>
+            </div>
+        </section>
+
+        <!-- VIEW: VOXEL CRAFT 3D -->
+        <section id="voxel-view">
+            <div id="crosshair"></div>
+            <div id="voxel-ui">
+                <div style="pointer-events: auto;">
+                    <button class="back-btn" onclick="exitVoxel(); showView('dashboard-view')">← Exit 3D</button>
+                </div>
+                
+                <div id="voxel-menu">
+                    <h2 style="color:white; margin-bottom:10px;">Controls</h2>
+                    <p style="font-size: 0.8rem; color: #ddd;">WASD to Move | SPACE Jump | Left Click Break | Right Click Build</p>
+                    <div style="margin: 10px;">
+                        <div class="block-btn b-grass active" onclick="setVoxelColor(0x567d46)"></div>
+                        <div class="block-btn b-dirt" onclick="setVoxelColor(0x8B4513)"></div>
+                        <div class="block-btn b-stone" onclick="setVoxelColor(0x808080)"></div>
+                        <div class="block-btn b-wood" onclick="setVoxelColor(0xA0522D)"></div>
+                    </div>
+                    <button id="voxel-start-btn" class="btn-primary">PLAY</button>
+                </div>
+
+                <div></div> <!-- Spacer -->
+            </div>
+            <!-- Canvas injected by JS -->
+        </section>
+
+    </main>
+
+    <script>
+        /* --- GLOBAL VARIABLES --- */
+        let currentUser = localStorage.getItem('gameUser');
+        let currentView = 'auth-view';
+
+        /* --- NAVIGATION & AUTH --- */
+        function checkAuth() {
+            if (currentUser) {
+                document.getElementById('headerUserInfo').style.display = 'flex';
+                document.getElementById('displayUsername').innerText = currentUser;
+                showView('dashboard-view');
+            } else {
+                document.getElementById('headerUserInfo').style.display = 'none';
+                showView('auth-view');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            currentUser = document.getElementById('username').value;
+            localStorage.setItem('gameUser', currentUser);
+            showToast("Welcome " + currentUser);
+            checkAuth();
+        }
+
+        function logout() {
+            localStorage.removeItem('gameUser');
+            location.reload();
+        }
+
+        function showView(viewId) {
+            // Hide all
+            document.querySelectorAll('.section').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('active');
+            });
+
+            // Show target
+            const target = document.getElementById(viewId);
+            target.style.display = 'block'; // Need to set display block before animating opacity
+            setTimeout(() => target.classList.add('active'), 10);
+            
+            currentView = viewId;
+
+            // Performance Management: Pause games not in use
+            if(viewId === 'snake-view') startSnakeLoop(); else stopSnakeLoop();
+            if(viewId === 'voxel-view') startVoxelLoop(); else stopVoxelLoop();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.innerText = msg; t.className = "show";
+            setTimeout(() => t.className = t.className.replace("show", ""), 3000);
+        }
+
+        /* --- GAME 1: TIC TAC TOE --- */
+        function initTicTacToe() {
+            const board = document.getElementById('ttt-board');
+            const status = document.getElementById('ttt-status');
+            let xTurn = true; let active = true; let state = Array(9).fill('');
+            
+            board.innerHTML = '';
+            state.forEach((_, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => {
+                    if(!active || state[i]) return;
+                    state[i] = xTurn ? 'X' : 'O';
+                    cell.innerText = state[i];
+                    cell.classList.add(state[i].toLowerCase());
+                    xTurn = !xTurn;
+                    if(checkWin(state)) { status.innerText = (xTurn?'O':'X')+" Wins!"; active = false; }
+                    else if(!state.includes('')) { status.innerText = "Draw!"; active = false; }
+                    else status.innerText = "Player " + (xTurn?'X':'O');
+                };
+                board.appendChild(cell);
+            });
+            status.innerText = "Player X";
+        }
+        function checkWin(s) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            return wins.some(c => s[c[0]] && s[c[0]]===s[c[1]] && s[c[1]]===s[c[2]]);
+        }
+
+        /* --- GAME 2: SNAKE --- */
+        let snakeInt;
+        const sCanvas = document.getElementById('snakeCanvas');
+        const sCtx = sCanvas.getContext('2d');
+        let snake = [{x:10, y:10}]; let food = {x:15, y:15}; let d=null; let score=0;
+        
+        function startSnake() {
+            snake = [{x:10,y:10}]; score=0; d=null;
+            document.addEventListener('keydown', sDir);
+            startSnakeLoop();
+        }
+        function sDir(e) { if([37,38,39,40].includes(e.keyCode)) { if(d==='LEFT' && e.keyCode===39) return; /* prevent reverse */ d=['UP','DOWN','LEFT','RIGHT'][[38,40,37,39].indexOf(e.keyCode)]; } }
+        function startSnakeLoop() {
+            if(snakeInt) clearInterval(snakeInt);
+            snakeInt = setInterval(() => {
+                if(!d) return;
+                let head = {...snake[0]};
+                if(d==='UP') head.y--; if(d==='DOWN') head.y++; if(d==='LEFT') head.x--; if(d==='RIGHT') head.x++;
+                
+                if(head.x<0||head.x>=30||head.y<0||head.y>=30||snake.some(p=>p.x===head.x&&p.y===head.y)) { clearInterval(snakeInt); alert("Game Over"); return; }
+                
+                snake.unshift(head);
+                if(head.x===food.x && head.y===food.y) { score++; food = {x:Math.floor(Math.random()*30), y:Math.floor(Math.random()*30)}; }
+                else snake.pop();
+                
+                sCtx.fillStyle='black'; sCtx.fillRect(0,0,300,300);
+                sCtx.fillStyle='lime'; snake.forEach(p=>sCtx.fillRect(p.x*10, p.y*10, 9, 9));
+                sCtx.fillStyle='red'; sCtx.fillRect(food.x*10, food.y*10, 9, 9);
+                document.getElementById('snake-score').innerText = score;
+            }, 100);
+        }
+        function stopSnake() { clearInterval(snakeInt); document.removeEventListener('keydown', sDir); }
+        function stopSnakeLoop() { clearInterval(snakeInt); }
+
+        /* --- GAME 3: MEMORY --- */
+        function initMemory() {
+            const icons = ['🍎','🍌','🍇','🍉','🍒','🍓','🍍','🥝'];
+            const cards = [...icons, ...icons].sort(() => 0.5-Math.random());
+            const board = document.getElementById('mem-board');
+            board.innerHTML = ''; let flipped = []; let moves = 0; let lock = false;
+            
+            cards.forEach(icon => {
+                const el = document.createElement('div');
+                el.className = 'memory-card';
+                el.innerHTML = `<div class="front-face">?</div><div class="back-face">${icon}</div>`;
+                el.onclick = () => {
+                    if(lock || el.classList.contains('flip')) return;
+                    el.classList.add('flip'); flipped.push(el);
+                    if(flipped.length===2) {
+                        lock = true; moves++;
+                        document.getElementById('mem-moves').innerText = moves;
+                        if(flipped[0].querySelector('.back-face').innerText === flipped[1].querySelector('.back-face').innerText) {
+                            flipped = []; lock = false;
+                        } else {
+                            setTimeout(() => { flipped.forEach(c=>c.classList.remove('flip')); flipped = []; lock = false; }, 1000);
+                        }
+                    }
+                };
+                board.appendChild(el);
+            });
+        }
+
+        /* --- GAME 4: VOXEL CRAFT 3D (Three.js) --- */
+        let scene, camera, renderer, voxelInt;
+        let vVelocity = new THREE.Vector3();
+        let vMove = {f:false, b:false, l:false, r:false};
+        let vCanJump = false;
+        let vColor = 0x567d46;
+        let vObjects = [];
+        let vRaycaster = new THREE.Raycaster();
+
+        function initVoxelGame() {
+            if(scene) return; // Already initialized
+            
+            // Setup Scene
+            const container = document.getElementById('voxel-view');
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB);
+            scene.fog = new THREE.Fog(0x87CEEB, 20, 60);
+            
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 2, 5);
+            
+            renderer = new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // Lights
+            const amb = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(amb);
+            const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+            dir.position.set(10, 20, 10);
+            dir.castShadow = true;
+            scene.add(dir);
+
+            // Floor
+            const geo = new THREE.BoxGeometry(1,1,1);
+            for(let x=-10; x<10; x++) {
+                for(let z=-10; z<10; z++) {
+                    const mat = new THREE.MeshLambertMaterial({color: 0x567d46});
+                    const mesh = new THREE.Mesh(geo, mat);
+                    mesh.position.set(x, 0, z);
+                    mesh.castShadow = true; mesh.receiveShadow = true;
+                    scene.add(mesh); vObjects.push(mesh);
+                }
+            }
+
+            // Inputs
+            document.addEventListener('keydown', vKeyDown);
+            document.addEventListener('keyup', vKeyUp);
+            document.addEventListener('mousedown', vClick);
+            document.getElementById('voxel-start-btn').addEventListener('click', () => {
+                document.body.requestPointerLock();
+                document.getElementById('voxel-menu').style.display = 'none';
+            });
+            document.addEventListener('mousemove', (e) => {
+                if(document.pointerLockElement === document.body) {
+                    camera.rotation.y -= e.movementX * 0.002;
+                }
+            });
+            document.addEventListener('pointerlockchange', () => {
+                if(document.pointerLockElement !== document.body) {
+                    document.getElementById('voxel-menu').style.display = 'block';
+                    document.getElementById('voxel-start-btn').innerText = "RESUME";
+                }
+            });
+        }
+
+        function setVoxelColor(c) { vColor = c; }
+        
+        function vKeyDown(e) {
+            if(currentView!=='voxel-view') return;
+            if(e.code==='KeyW') vMove.f=true;
+            if(e.code==='KeyS') vMove.b=true;
+            if(e.code==='KeyA') vMove.l=true;
+            if(e.code==='KeyD') vMove.r=true;
+            if(e.code==='Space' && vCanJump) { vVelocity.y = 8; vCanJump = false; }
+        }
+        function vKeyUp(e) {
+            if(e.code==='KeyW') vMove.f=false;
+            if(e.code==='KeyS') vMove.b=false;
+            if(e.code==='KeyA') vMove.l=false;
+            if(e.code==='KeyD') vMove.r=false;
+        }
+        function vClick(e) {
+            if(document.pointerLockElement !== document.body) return;
+            vRaycaster.setFromCamera(new THREE.Vector2(0,0), camera);
+            const hits = vRaycaster.intersectObjects(vObjects);
+            if(hits.length>0) {
+                const hit = hits[0];
+                // Left Click: Break
+                if(e.button===0 && hit.object.position.y > 0) {
+                    scene.remove(hit.object);
+                    vObjects = vObjects.filter(o => o !== hit.object);
+                }
+                // Right Click: Place
+                if(e.button===2) {
+                    const n = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshLambertMaterial({color:vColor}));
+                    n.position.copy(hit.object.position).add(hit.face.normal);
+                    scene.add(n); vObjects.push(n);
+                }
+            }
+        }
+
+        function startVoxelLoop() {
+            if(!scene) initVoxelGame();
+            if(voxelInt) return;
+            voxelInt = setInterval(() => {
+                // Physics
+                vVelocity.x -= vVelocity.x * 10.0 * 0.016;
+                vVelocity.z -= vVelocity.z * 10.0 * 0.016;
+                vVelocity.y -= 20.0 * 0.016;
+
+                const dir = new THREE.Vector3();
+                dir.z = Number(vMove.f) - Number(vMove.b);
+                dir.x = Number(vMove.r) - Number(vMove.l);
+                dir.normalize();
+
+                if(vMove.f || vMove.b) vVelocity.z -= dir.z * 20.0 * 0.016;
+                if(vMove.l || vMove.r) vVelocity.x -= dir.x * 20.0 * 0.016;
+
+                camera.translateX(-vVelocity.x * 0.016);
+                camera.translateZ(-vVelocity.z * 0.016);
+                camera.position.y += vVelocity.y * 0.016;
+
+                if(camera.position.y < 2.0) { vVelocity.y = 0; camera.position.y = 2.0; vCanJump = true; }
+                
+                renderer.render(scene, camera);
+            }, 16);
+        }
+
+        function stopVoxelLoop() {
+            clearInterval(voxelInt);
+            voxelInt = null;
+            document.exitPointerLock();
+        }
+
+        function exitVoxel() {
+            stopVoxelLoop();
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            checkAuth();
+            initTicTacToe();
+            initMemory();
+        };
+    </script>
+</body>
+</html>
