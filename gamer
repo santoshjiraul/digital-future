@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Game Hub - Login & Play</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --accent: #ff512f;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #ffffff;
+            --success: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header / Navigation */
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--secondary);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        button {
+            cursor: pointer;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Sections Logic (SPA Feel) */
+        .section {
+            display: none; /* Hide all by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block; /* Show active */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login Section */
+        .auth-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #0f3460;
+            color: white;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Dashboard (Game Selection) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .card-img {
+            height: 150px;
+            background: linear-gradient(45deg, #2b5876, #4e4376);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .card-content p {
+            color: #aaa;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        /* --- GAME 1: TIC TAC TOE --- */
+        .tictactoe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin: 2rem auto;
+            width: fit-content;
+        }
+
+        .cell {
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            color: var(--text);
+            transition: background 0.2s;
+        }
+
+        .cell:hover {
+            background: #2a3b55;
+        }
+
+        .cell.x { color: var(--accent); }
+        .cell.o { color: var(--success); }
+
+        .game-status {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 2rem;
+        }
+
+        /* --- GAME 2: SNAKE --- */
+        .snake-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            background: #000;
+            border: 2px solid var(--primary);
+            border-radius: 5px;
+            max-width: 100%;
+        }
+
+        .controls-info {
+            margin-top: 1rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* --- GAME 3: MEMORY MATCH --- */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-gap: 10px;
+            margin: 2rem auto;
+            width: fit-content;
+        }
+
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .front-face, .back-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            font-size: 2rem;
+        }
+
+        .front-face {
+            background: var(--primary);
+            color: white;
+        }
+
+        .back-face {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            transform: rotateY(180deg);
+        }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 17px;
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        /* Back Button for Games */
+        .back-btn {
+            margin-bottom: 1rem;
+            background: transparent;
+            border: 1px solid #666;
+            color: #ccc;
+        }
+        .back-btn:hover {
+            background: #333;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="logo">GameZone</div>
+        <div class="user-info" id="headerUserInfo" style="display: none;">
+            <span class="user-name" id="displayUsername">Player</span>
+            <button class="btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- TOAST NOTIFICATION -->
+        <div id="toast">Message here...</div>
+
+        <!-- VIEW 1: LOGIN / REGISTER -->
+        <section id="auth-view" class="section active">
+            <div class="auth-container">
+                <h2>Welcome Gamer</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="Any password works" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Login to Play</button>
+                </form>
+                <p style="margin-top: 15px; font-size: 0.8rem; color: #888;">
+                    (Note: Yeh ek demo login hai. LocalStorage save hoga.)
+                </p>
+            </div>
+        </section>
+
+        <!-- VIEW 2: DASHBOARD (GAME LIST) -->
+        <section id="dashboard-view" class="section">
+            <h1 style="margin-bottom: 10px;">Kya khelna hai aaj?</h1>
+            <p style="color: #aaa;">Apni pasand ka game chune aur khelna shuru karein.</p>
+            
+            <div class="dashboard-grid">
+                <!-- Game 1 Card -->
+                <div class="game-card">
+                    <div class="card-img">❌⭕</div>
+                    <div class="card-content">
+                        <h3>Tic Tac Toe</h3>
+                        <p>Classic XO game. Do players ya computer ke khilaaf jeetein.</p>
+                        <button class="btn-primary" onclick="showView('tictactoe-view')">Play Now</button>
+                    </div>
+                </div>
+
+                <!-- Game 2 Card -->
+                <div class="game-card">
+                    <div class="card-img">🐍</div>
+                    <div class="card-content">
+                        <h3>Snake</h3>
+                        <p>Seeds khao aur badho. Deewar se mat takrao!</p>
+                        <button class="btn-primary" onclick="showView('snake-view')">Play Now</button>
+                    </div>
+                </div>
+
+                <!-- Game 3 Card -->
+                <div class="game-card">
+                    <div class="card-img">🎴</div>
+                    <div class="card-content">
+                        <h3>Memory Match</h3>
+                        <p>Apni yaadash test karein. Jode dhundhein.</p>
+                        <button class="btn-primary" onclick="showView('memory-view')">Play Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: TIC TAC TOE GAME -->
+        <section id="tictactoe-view" class="section">
+            <button class="back-btn" onclick="showView('dashboard-view')">← Wapas Jayein</button>
+            <div style="text-align: center;">
+                <h2>Tic Tac Toe</h2>
+                <div class="game-status" id="ttt-status">Player X's Turn</div>
+                <div class="tictactoe-board" id="ttt-board">
+                    <!-- Cells generated by JS -->
+                </div>
+                <button class="btn-primary" onclick="initTicTacToe()">Restart Game</button>
+            </div>
+        </section>
+
+        <!-- VIEW 4: SNAKE GAME -->
+        <section id="snake-view" class="section">
+            <button class="back-btn" onclick="stopSnakeGame(); showView('dashboard-view')">← Wapas Jayein</button>
+            <div class="snake-container">
+                <h2 style="margin-bottom: 10px;">Snake Game</h2>
+                <div class="game-status">Score: <span id="snake-score">0</span></div>
+                <canvas id="snakeCanvas" width="400" height="400"></canvas>
+                <div class="controls-info">
+                    Button dabayein start karne ke liye. Arrow keys se control karein.
+                </div>
+                <button class="btn-primary" style="margin-top: 15px;" onclick="startSnakeGame()">Start Game</button>
+            </div>
+        </section>
+
+        <!-- VIEW 5: MEMORY GAME -->
+        <section id="memory-view" class="section">
+            <button class="back-btn" onclick="showView('dashboard-view')">← Wapas Jayein</button>
+            <div style="text-align: center;">
+                <h2>Memory Match</h2>
+                <div class="game-status">Moves: <span id="memory-moves">0</span></div>
+                <div class="memory-grid" id="memory-board">
+                    <!-- Cards generated by JS -->
+                </div>
+                <button class="btn-primary" onclick="initMemoryGame()">Restart</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+
+        // --- GLOBAL STATE & NAVIGATION ---
+        let currentUser = localStorage.getItem('gameUser') || null;
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function showView(viewId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // Show target section
+            document.getElementById(viewId).classList.add('active');
+            
+            // Pause games if leaving their view
+            if(viewId !== 'snake-view') stopSnakeGame();
+        }
+
+        function checkAuth() {
+            const headerInfo = document.getElementById('headerUserInfo');
+            if (currentUser) {
+                document.getElementById('displayUsername').innerText = currentUser;
+                headerInfo.style.display = 'flex';
+                showView('dashboard-view');
+            } else {
+                headerInfo.style.display = 'none';
+                showView('auth-view');
+            }
+        }
+
+        // --- AUTHENTICATION LOGIC ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            if (username.length > 0) {
+                currentUser = username;
+                localStorage.setItem('gameUser', currentUser);
+                showToast(`Welcome, ${username}!`);
+                checkAuth();
+            } else {
+                showToast("Kripya naam likhein.");
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('gameUser');
+            showToast("Aap logout ho gaye.");
+            checkAuth();
+        }
+
+        // --- GAME 1: TIC TAC TOE ---
+        const tttBoard = document.getElementById('ttt-board');
+        const tttStatus = document.getElementById('ttt-status');
+        let tttGameState = ['', '', '', '', '', '', '', '', ''];
+        let tttCurrentPlayer = 'X';
+        let tttGameActive = false;
+
+        function initTicTacToe() {
+            tttBoard.innerHTML = '';
+            tttGameState = ['', '', '', '', '', '', '', '', ''];
+            tttCurrentPlayer = 'X';
+            tttGameActive = true;
+            tttStatus.innerText = `Player ${tttCurrentPlayer}'s Turn`;
+
+            tttGameState.forEach((cell, index) => {
+                const div = document.createElement('div');
+                div.classList.add('cell');
+                div.addEventListener('click', () => handleCellClick(div, index));
+                tttBoard.appendChild(div);
+            });
+        }
+
+        function handleCellClick(cell, index) {
+            if (tttGameState[index] !== '' || !tttGameActive) return;
+
+            tttGameState[index] = tttCurrentPlayer;
+            cell.innerText = tttCurrentPlayer;
+            cell.classList.add(tttCurrentPlayer.toLowerCase());
+
+            if (checkTttWin()) {
+                tttStatus.innerText = `Player ${tttCurrentPlayer} Wins! 🎉`;
+                tttGameActive = false;
+                return;
+            }
+            if (!tttGameState.includes('')) {
+                tttStatus.innerText = "It's a Draw!";
+                tttGameActive = false;
+                return;
+            }
+
+            tttCurrentPlayer = tttCurrentPlayer === 'X' ? 'O' : 'X';
+            tttStatus.innerText = `Player ${tttCurrentPlayer}'s Turn`;
+        }
+
+        function checkTttWin() {
+            const winConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Cols
+                [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+            return winConditions.some(combination => {
+                return combination.every(index => {
+                    return tttGameState[index] === tttCurrentPlayer;
+                });
+            });
+        }
+
+        // --- GAME 2: SNAKE ---
+        const canvas = document.getElementById('snakeCanvas');
+        const ctx = canvas.getContext('2d');
+        const box = 20;
+        let snake = [];
+        let food = {};
+        let score = 0;
+        let d;
+        let snakeGameInterval;
+
+        function startSnakeGame() {
+            snake = [];
+            snake[0] = { x: 9 * box, y: 10 * box };
+            score = 0;
+            document.getElementById('snake-score').innerText = score;
+            d = undefined; // Wait for input
+            spawnFood();
+            if (snakeGameInterval) clearInterval(snakeGameInterval);
+            
+            document.addEventListener("keydown", direction);
+            
+            snakeGameInterval = setInterval(drawSnake, 100);
+            showToast("Game Start! Arrow keys dabayein.");
+        }
+
+        function stopSnakeGame() {
+            clearInterval(snakeGameInterval);
+            document.removeEventListener("keydown", direction);
+        }
+
+        function direction(event) {
+            let key = event.keyCode;
+            if (key == 37 && d != "RIGHT") d = "LEFT";
+            else if (key == 38 && d != "DOWN") d = "UP";
+            else if (key == 39 && d != "LEFT") d = "RIGHT";
+            else if (key == 40 && d != "UP") d = "DOWN";
+        }
+
+        function spawnFood() {
+            food = {
+                x: Math.floor(Math.random() * 19 + 1) * box,
+                y: Math.floor(Math.random() * 19 + 1) * box
+            };
+        }
+
+        function drawSnake() {
+            // Background
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, 400, 400);
+
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = (i == 0) ? "#ff512f" : "#fff";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = "red";
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            ctx.fillStyle = "#00d2ff";
+            ctx.fillRect(food.x, food.y, box, box);
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (!d) return; // Don't move until key press
+
+            if (d == "LEFT") snakeX -= box;
+            if (d == "UP") snakeY -= box;
+            if (d == "RIGHT") snakeX += box;
+            if (d == "DOWN") snakeY += box;
+
+            // Eat Food
+            if (snakeX == food.x && snakeY == food.y) {
+                score++;
+                document.getElementById('snake-score').innerText = score;
+                spawnFood();
+            } else {
+                snake.pop();
+            }
+
+            // Game Over Rules
+            if (snakeX < 0 || snakeX >= 400 || snakeY < 0 || snakeY >= 400 || collision(snakeX, snakeY, snake)) {
+                clearInterval(snakeGameInterval);
+                showToast(`Game Over! Score: ${score}`);
+                return;
+            }
+
+            let newHead = { x: snakeX, y: snakeY };
+            snake.unshift(newHead);
+        }
+
+        function collision(x, y, array) {
+            for (let i = 0; i < array.length; i++) {
+                if (x == array[i].x && y == array[i].y) return true;
+            }
+            return false;
+        }
+
+        // --- GAME 3: MEMORY MATCH ---
+        const memoryBoard = document.getElementById('memory-board');
+        const memoryIcons = ['🍎', '🍌', '🍇', '🍉', '🍒', '🍓', '🍍', '🥝'];
+        let cards = [];
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let memoryMoves = 0;
+
+        function initMemoryGame() {
+            memoryBoard.innerHTML = '';
+            memoryMoves = 0;
+            document.getElementById('memory-moves').innerText = memoryMoves;
+            
+            // Duplicate icons and shuffle
+            cards = [...memoryIcons, ...memoryIcons];
+            cards.sort(() => 0.5 - Math.random());
+
+            cards.forEach(icon => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.icon = icon;
+
+                const front = document.createElement('div');
+                front.classList.add('front-face');
+                front.textContent = '?';
+
+                const back = document.createElement('div');
+                back.classList.add('back-face');
+                back.textContent = icon;
+
+                card.appendChild(front);
+                card.appendChild(back);
+                card.addEventListener('click', flipCard);
+                memoryBoard.appendChild(card);
+            });
+
+            resetBoard();
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flip');
+
+            if (!hasFlippedCard) {
+                // First click
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            // Second click
+            secondCard = this;
+            incrementMoves();
+            checkForMatch();
+        }
+
+        function incrementMoves() {
+            memoryMoves++;
+            document.getElementById('memory-moves').innerText = memoryMoves;
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            resetBoard();
+            
+            // Check Win
+            if (document.querySelectorAll('.memory-card.flip').length === cards.length) {
+                setTimeout(() => showToast("Aap Jeet Gaye! 🎉"), 500);
+            }
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flip');
+                secondCard.classList.remove('flip');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            checkAuth();
+            initTicTacToe();
+            initMemoryGame();
+        };
+
+    </script>
+</body>
+</html>
