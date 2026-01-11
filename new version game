@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Pulse - New Game</title>
+    <style>
+        /* CSS: Game ka Look & Feel */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            user-select: none; /* Text select hone se rokein */
+        }
+
+        /* Game Container Center mein */
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1a1a2e 0%, #000000 100%);
+        }
+
+        /* Canvas jahan game draw hoga */
+        canvas {
+            display: block;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        /* UI Layer (Score aur Messages) */
+        .ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none; /* Click ko aage pass karne do */
+        }
+
+        #score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Start aur Game Over Screen */
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00f3ff, #ff0055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #00f3ff, #0066ff);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Instructions icons */
+        .key-hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Score Display -->
+        <div class="ui-layer">
+            <div id="score">0</div>
+        </div>
+
+        <!-- Start/Game Over Screen -->
+        <div id="overlay">
+            <h1>NEON PULSE</h1>
+            <p id="msg">Click karke ya Spacebar dabakar Color match karein!</p>
+            <button id="startBtn">Start Game</button>
+            <div class="key-hint">Controls: Mouse Click / Spacebar</div>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME CONFIGURATION ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const overlay = document.getElementById('overlay');
+        const startBtn = document.getElementById('startBtn');
+        const msgEl = document.getElementById('msg');
+
+        // Colors
+        const COLOR_1 = '#00f3ff'; // Cyan
+        const COLOR_2 = '#ff0055'; // Pink/Red
+        const COLORS = [COLOR_1, COLOR_2];
+
+        // Game State
+        let isPlaying = false;
+        let score = 0;
+        let playerColorIndex = 0; // 0 ya 1
+        let enemies = [];
+        let particles = [];
+        let spawnRate = 60; // Frames mein kitni duri pe enemy aaye
+        let frames = 0;
+        let gameSpeed = 2;
+
+        // Resize Canvas
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // --- CLASSES ---
+
+        // Player Class (Center Circle)
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 40,
+            
+            draw() {
+                // Glow effect
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = COLORS[playerColorIndex];
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = COLORS[playerColorIndex];
+                ctx.fill();
+                ctx.closePath();
+                
+                // Inner white core
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                ctx.closePath();
+                
+                ctx.shadowBlur = 0; // Reset shadow
+            }
+        };
+
+        // Enemy Class (Coming from outside)
+        class Enemy {
+            constructor() {
+                this.radius = 15;
+                this.colorIndex = Math.floor(Math.random() * 2); // Random color (0 or 1)
+                
+                // Random position on the edge of screen
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.max(canvas.width, canvas.height) / 1.5; // Thoda bahar se shuru
+                
+                this.x = canvas.width / 2 + Math.cos(angle) * distance;
+                this.y = canvas.height / 2 + Math.sin(angle) * distance;
+                
+                // Move towards center logic
+                this.angle = angle;
+                this.speed = gameSpeed + (Math.random() * 1); // Thoda random speed
+                
+                this.dx = Math.cos(angle) * this.speed;
+                this.dy = Math.sin(angle) * this.speed;
+                
+                this.markedForDeletion = false;
+            }
+
+            update() {
+                this.x -= this.dx;
+                this.y -= this.dy;
+
+                // Distance from center
+                const dist = Math.hypot(this.x - player.x, this.y - player.y);
+
+                // Collision Detection
+                if (dist - this.radius - player.radius < 1) {
+                    // Collision hua
+                    if (this.colorIndex === playerColorIndex) {
+                        // Color Matched -> Enemy Destroy + Score
+                        createExplosion(this.x, this.y, COLORS[this.colorIndex]);
+                        score += 10;
+                        scoreEl.innerText = score;
+                        this.markedForDeletion = true;
+                        
+                        // Difficulty increase
+                        if(score % 50 === 0) gameSpeed += 0.5;
+                    } else {
+                        // Color NOT Matched -> Game Over
+                        gameOver();
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = COLORS[this.colorIndex];
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        // Particle Class (Explosion Effect)
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 5 + 2;
+                this.speedX = (Math.random() - 0.5) * 6;
+                this.speedY = (Math.random() - 0.5) * 6;
+                this.life = 1; // Opacity
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= 0.05;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createExplosion(x, y, color) {
+            for(let i=0; i<8; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        // --- GAME FUNCTIONS ---
+
+        function toggleColor() {
+            if(!isPlaying) return;
+            playerColorIndex = playerColorIndex === 0 ? 1 : 0;
+        }
+
+        function initGame() {
+            score = 0;
+            gameSpeed = 2;
+            enemies = [];
+            particles = [];
+            scoreEl.innerText = score;
+            isPlaying = true;
+            overlay.classList.add('hidden');
+            player.x = canvas.width / 2;
+            player.y = canvas.height / 2;
+            animate();
+        }
+
+        function gameOver() {
+            isPlaying = false;
+            msgEl.innerText = `Game Over! Score: ${score}`;
+            startBtn.innerText = "Try Again";
+            overlay.classList.remove('hidden');
+        }
+
+        function animate() {
+            if(!isPlaying) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frames++;
+
+            // Spawn Enemies
+            // Jaise jaise score badhega, utna tez enemies aayenge
+            let currentSpawnRate = spawnRate;
+            if(score > 100) currentSpawnRate = 45;
+            if(score > 200) currentSpawnRate = 30;
+
+            if (frames % currentSpawnRate === 0) {
+                enemies.push(new Enemy());
+            }
+
+            // Update & Draw Player
+            player.draw();
+
+            // Handle Enemies
+            enemies.forEach((enemy, index) => {
+                enemy.update();
+                enemy.draw();
+                if(enemy.markedForDeletion) {
+                    enemies.splice(index, 1);
+                }
+            });
+
+            // Handle Particles
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if(p.life <= 0) particles.splice(index, 1);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Mouse Click
+        window.addEventListener('mousedown', toggleColor);
+        
+        // Touch (Mobile)
+        window.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Zoom rokne ke liye
+            toggleColor();
+        });
+
+        // Keyboard (Spacebar)
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if(!isPlaying && !overlay.classList.contains('hidden')) {
+                    initGame();
+                } else {
+                    toggleColor();
+                }
+            }
+        });
+
+        // Start Button
+        startBtn.addEventListener('click', initGame);
+
+    </script>
+</body>
+</html>
