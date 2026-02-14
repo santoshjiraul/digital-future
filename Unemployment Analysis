@@ -1,0 +1,18 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv("Unemployment_in_India.csv")
+print(df.head())
+print(df.describe())
+df['Date'] = pd.to_datetime(df['Date'])
+
+plt.figure(figsize=(10,5))
+plt.plot(df['Date'], df['Estimated Unemployment Rate (%)'])
+plt.title("Unemployment Rate Over Time")
+plt.xlabel("Date")
+plt.ylabel("Unemployment Rate (%)")
+plt.show()
+state_avg = df.groupby('Region')['Estimated Unemployment Rate (%)'].mean()
+
+state_avg.plot(kind='bar', figsize=(10,5))
+plt.title("Average Unemployment Rate by State")
+plt.show()
