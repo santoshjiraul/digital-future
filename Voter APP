@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Vote India | Voter ID Portal</title>
+    <style>
+        :root {
+            --primary: #ff9933; /* Saffron */
+            --secondary: #138808; /* Green */
+            --accent: #000080; /* Navy Blue */
+            --light: #f4f7f6;
+            --dark: #333;
+            --white: #ffffff;
+            --gray: #ccc;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--white), var(--secondary));
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- Views (Sections) --- */
+        .view {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Components --- */
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #000050;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--dark);
+        }
+
+        .btn-success {
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* --- Auth Forms --- */
+        .auth-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .auth-toggle {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .auth-toggle a {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* --- Steps Wizard --- */
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .wizard-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ddd;
+            z-index: 0;
+        }
+
+        .step {
+            background: var(--white);
+            z-index: 1;
+            padding: 5px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #ddd;
+        }
+
+        .step.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #eef;
+        }
+
+        .step.completed {
+            border-color: var(--secondary);
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        /* --- ID Card Design --- */
+        .voter-id-card {
+            width: 400px;
+            height: 250px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin: 0 auto;
+        }
+
+        .card-header {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .emblem {
+            width: 40px;
+            height: auto;
+            opacity: 0.8;
+        }
+
+        .gov-text {
+            font-size: 0.6rem;
+            text-align: right;
+            color: var(--dark);
+        }
+
+        .card-body {
+            display: flex;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .photo-box {
+            width: 100px;
+            height: 120px;
+            background: #ddd;
+            border: 1px solid #999;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .details {
+            flex: 1;
+            font-size: 0.75rem;
+        }
+
+        .details h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: var(--accent);
+        }
+
+        .detail-row {
+            margin-bottom: 4px;
+            display: flex;
+        }
+
+        .label {
+            font-weight: bold;
+            width: 70px;
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            right: 15px;
+            font-size: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+        }
+
+        /* --- Toast Notification --- */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            right: 30px;
+            top: 30px;
+            font-size: 17px;
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {top: 0; opacity: 0;}
+            to {top: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {top: 30px; opacity: 1;}
+            to {top: 0; opacity: 0;}
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            nav ul {
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+            .voter-id-card {
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+                padding: 10px;
+            }
+            .card-body {
+                flex-direction: column;
+                align-items: center;
+                margin-top: 40px;
+            }
+            .photo-box {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .details {
+                width: 100%;
+            }
+        }
+
+        /* Print Style */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #view-download, #view-download * {
+                visibility: visible;
+            }
+            #view-download {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="logo">
+            🇮🇳 <span>E-Vote</span> India
+        </div>
+        <nav class="no-print">
+            <ul id="nav-links">
+                <!-- Links will be injected by JS based on login state -->
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- 1. LANDING PAGE -->
+        <section id="view-landing" class="view active">
+            <div class="card" style="text-align: center; padding: 4rem 2rem;">
+                <h1 style="color: var(--accent); margin-bottom: 1rem;">आपका मत, आपकी ताकत</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">नया वोटर आईडी बनवाएं, स्टेटस चेक करें और अपना डिजिटल कार्ड डाउनलोड करें।</p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="app.navTo('view-register')">नया पंजीकरण (Register)</button>
+                    <button class="btn btn-secondary" onclick="app.navTo('view-login')">लॉगिन करें</button>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div class="card">
+                    <h3>📝 नया आवेदन</h3>
+                    <p>Form 6 भरकर अपना नाम वोटर लिस्ट में जुड़वाएं।</p>
+                </div>
+                <div class="card">
+                    <h3>🔍 स्टेटस ट्रैक करें</h3>
+                    <p>अपने आवेदन की प्रगति को रिफरेंस आईडी से देखें।</p>
+                </div>
+                <div class="card">
+                    <h3>📥 ई-पीडीएफ डाउनलोड</h3>
+                    <p>अपना डिजिटल वोटर कार्ड यहाँ से प्राप्त करें।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LOGIN PAGE -->
+        <section id="view-login" class="view">
+            <div class="card auth-container">
+                <h2>लॉगिन करें</h2>
+                <p style="margin-bottom: 1.5rem; font-size: 0.9rem;">अपने अकाउंट में एक्सेस करने के लिए लॉगिन करें</p>
+                <form onsubmit="app.handleLogin(event)">
+                    <div class="form-group">
+                        <label>यूजरनेम / मोबाइल</label>
+                        <input type="text" id="login-user" required placeholder="जैसे: user123">
+                    </div>
+                    <div class="form-group">
+                        <label>पासवर्ड</label>
+                        <input type="password" id="login-pass" required placeholder="******">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">लॉगिन</button>
+                </form>
+                <div class="auth-toggle">
+                    अकाउंट नहीं है? <a onclick="app.navTo('view-register')">रजिस्टर करें</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. REGISTER PAGE -->
+        <section id="view-register" class="view">
+            <div class="card auth-container">
+                <h2>नया अकाउंट बनाएं</h2>
+                <form onsubmit="app.handleRegister(event)">
+                    <div class="form-group">
+                        <label>यूजरनेम</label>
+                        <input type="text" id="reg-user" required>
+                    </div>
+                    <div class="form-group">
+                        <label>मोबाइल नंबर</label>
+                        <input type="tel" id="reg-mobile" required pattern="[0-9]{10}" title="10 digit mobile">
+                    </div>
+                    <div class="form-group">
+                        <label>पासवर्ड</label>
+                        <input type="password" id="reg-pass" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">रजिस्टर</button>
+                </form>
+                <div class="auth-toggle">
+                    पहले से अकाउंट है? <a onclick="app.navTo('view-login')">लॉगिन करें</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. DASHBOARD -->
+        <section id="view-dashboard" class="view">
+            <div class="card">
+                <h2>नमस्ते, <span id="dash-username">User</span> 👋</h2>
+                <p>आपका वोटर सेवा डैशबोर्ड</p>
+                <hr style="margin: 1rem 0; border: 0; border-top: 1px solid #eee;">
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px; padding: 1rem; background: #eef; border-radius: 8px;">
+                        <h3>मेरा आवेदन स्थिति</h3>
+                        <div id="application-status-area">
+                            <p>अभी तक कोई आवेदन नहीं।</p>
+                            <button class="btn btn-primary" style="margin-top: 10px;" onclick="app.startApplication()">नया आवेदन शुरू करें</button>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; padding: 1rem; background: #efe; border-radius: 8px;">
+                        <h3>डाउनलोड कार्ड</h3>
+                        <p>यदि आवेदन स्वीकृत है, तो यहाँ से कार्ड डाउनलोड करें।</p>
+                        <button class="btn btn-success" style="margin-top: 10px;" onclick="app.navTo('view-download')">कार्ड देखें/डाउनलोड करें</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. APPLICATION FORM (WIZARD) -->
+        <section id="view-apply" class="view">
+            <div class="card">
+                <h2 style="text-align: center; margin-bottom: 2rem;">वोटर आईडी आवेदन पत्र (Form 6)</h2>
+                
+                <!-- Steps Indicator -->
+                <div class="wizard-steps">
+                    <div class="step active" id="step-ind-1">1. विवरण</div>
+                    <div class="step" id="step-ind-2">2. पता</div>
+                    <div class="step" id="step-ind-3">3. समीक्षा</div>
+                </div>
+
+                <form id="apply-form" onsubmit="event.preventDefault()">
+                    <!-- Step 1: Personal Details -->
+                    <div id="step-1" class="step-content">
+                        <div class="form-group">
+                            <label>पूरा नाम (Full Name)</label>
+                            <input type="text" id="form-name" required placeholder="जैसा आधार में है">
+                        </div>
+                        <div class="form-group">
+                            <label>पिता/पति का नाम</label>
+                            <input type="text" id="form-fname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>जन्म तिथि (DOB)</label>
+                            <input type="date" id="form-dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label>लिंग</label>
+                            <select id="form-gender" required>
+                                <option value="">चुनें</option>
+                                <option value="Male">पुरुष</option>
+                                <option value="Female">महिला</option>
+                                <option value="Other">अन्य</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="app.nextStep(2)">अगला</button>
+                    </div>
+
+                    <!-- Step 2: Address -->
+                    <div id="step-2" class="step-content" style="display: none;">
+                        <div class="form-group">
+                            <label>घर का पता</label>
+                            <textarea id="form-address" rows="3" required placeholder="मकान नंबर, कॉलोनी, शहर..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>राज्य (State)</label>
+                            <select id="form-state" required>
+                                <option value="">चुनें</option>
+                                <option value="Delhi">दिल्ली</option>
+                                <option value="Uttar Pradesh">उत्तर प्रदेश</option>
+                                <option value="Maharashtra">महाराष्ट्र</option>
+                                <option value="Bihar">बिहार</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>पिनकोड</label>
+                            <input type="text" id="form-pin" required pattern="[0-9]{6}" title="6 digits">
+                        </div>
+                        <div class="form-group">
+                            <label>प्रूफ अपलोड करें (आधार/पैन की फोटो)</label>
+                            <input type="file" id="form-doc" accept="image/*" onchange="app.handleFilePreview(this, 'doc-preview')">
+                            <div id="doc-preview" style="margin-top:10px; height: 50px; background:#eee; display:none;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="app.prevStep(1)">पिछला</button>
+                            <button class="btn btn-primary" onclick="app.nextStep(3)">समीक्षा करें</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Review & Submit -->
+                    <div id="step-3" class="step-content" style="display: none;">
+                        <h3>कृपया जानकारी जांचें</h3>
+                        <ul style="list-style: none; margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; border-radius: 5px;">
+                            <li><strong>नाम:</strong> <span id="rev-name"></span></li>
+                            <li><strong>पिता का नाम:</strong> <span id="rev-fname"></span></li>
+                            <li><strong>पता:</strong> <span id="rev-addr"></span></li>
+                        </ul>
+                        <div style="display: flex; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="app.prevStep(2)">पिछला</button>
+                            <button class="btn btn-success" onclick="app.submitApplication()">अंतिम रूप से जमा करें</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 6. DOWNLOAD CARD -->
+        <section id="view-download" class="view">
+            <div class="card no-print" style="text-align: center;">
+                <h2>आपका ई-वोटर कार्ड</h2>
+                <p>डाउनलोड करने के लिए "प्रिंट / PDF सेव करें" बटन दबाएं।</p>
+                <button class="btn btn-primary" onclick="window.print()">🖨️ प्रिंट / PDF सेव करें</button>
+                <button class="btn btn-secondary" onclick="app.navTo('view-dashboard')">वापस जाएं</button>
+            </div>
+
+            <!-- The Printable Card -->
+            <div class="voter-id-card" id="final-card">
+                <div class="card-header">
+                    <!-- Using a text placeholder for Emblem to keep it single file -->
+                    <div style="font-weight:bold; color:var(--primary);">भारत चुनाव आयोग</div>
+                    <div class="gov-text">
+                        GOVT OF INDIA<br>
+                        ELECTION COMMISSION
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="photo-box">
+                        <img id="card-photo" src="https://picsum.photos/seed/voter/100/120" alt="Voter Photo">
+                    </div>
+                    <div class="details">
+                        <h3>EPIC CARD</h3>
+                        <div class="detail-row"><span class="label">Name:</span> <span id="card-name">VOTER NAME</span></div>
+                        <div class="detail-row"><span class="label">Father:</span> <span id="card-fname">FATHER NAME</span></div>
+                        <div class="detail-row"><span class="label">DOB:</span> <span id="card-dob">01/01/1990</span></div>
+                        <div class="detail-row"><span class="label">Gender:</span> <span id="card-gender">Male</span></div>
+                        <div class="detail-row"><span class="label">Address:</span> <span id="card-addr">Street, City, State</span></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span id="card-id">EPIC: ABC1234567</span>
+                    <span id="card-status">Status: Active</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. TRACK APPLICATION -->
+        <section id="view-track" class="view">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h2>आवेदन की स्थिति ट्रैक करें</h2>
+                <div class="form-group">
+                    <label>रेफरेंस आईडी दर्ज करें</label>
+                    <input type="text" id="track-id" placeholder="जैसे: REF-12345">
+                </div>
+                <button class="btn btn-primary" onclick="app.trackApplication()">खोजें</button>
+                <div id="track-result" style="margin-top: 1rem; padding: 1rem; background: #eef; display: none; border-radius: 5px;"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: #222; color: #fff; text-align: center; padding: 1rem; margin-top: auto;">
+        <p>&copy; 2023 E-Vote India Portal (Demo Version). All rights reserved.</p>
+        <p style="font-size: 0.8rem; color: #888;">Disclaimer: This is a simulation project. Not a government website.</p>
+    </footer>
+
+    <!-- Toast Notification Element -->
+    <div id="toast">Message here...</div>
+
+    <script>
+        /**
+         * E-Vote App Logic
+         * Handles Navigation, Auth, Forms, and Card Generation
+         */
+        const app = {
+            currentUser: null,
+            users: JSON.parse(localStorage.getItem('voterUsers')) || [],
+            applications: JSON.parse(localStorage.getItem('voterApplications')) || [],
+            
+            init: function() {
+                // Check if already logged in (simple session check)
+                const sessionUser = sessionStorage.getItem('currentUser');
+                if (sessionUser) {
+                    this.currentUser = JSON.parse(sessionUser);
+                    this.updateNav();
+                    this.navTo('view-dashboard');
+                    this.renderDashboard();
+                } else {
+                    this.updateNav();
+                    this.navTo('view-landing');
+                }
+            },
+
+            // --- Navigation ---
+            navTo: function(viewId) {
+                // Hide all views
+                document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+                // Show target view
+                document.getElementById(viewId).classList.add('active');
+                window.scrollTo(0,0);
+            },
+
+            updateNav: function() {
+                const nav = document.getElementById('nav-links');
+                if (this.currentUser) {
+                    nav.innerHTML = `
+                        <li onclick="app.navTo('view-dashboard')">डैशबोर्ड</li>
+                        <li onclick="app.navTo('view-track')">ट्रैक आवेदन</li>
+                        <li onclick="app.logout()" style="color: red;">लॉगआउट</li>
+                    `;
+                } else {
+                    nav.innerHTML = `
+                        <li onclick="app.navTo('view-landing')">होम</li>
+                        <li onclick="app.navTo('view-login')">लॉगिन</li>
+                        <li onclick="app.navTo('view-register')">रजिस्टर</li>
+                        <li onclick="app.navTo('view-track')">ट्रैक</li>
+                    `;
+                }
+            },
+
+            showToast: function(msg) {
+                const x = document.getElementById("toast");
+                x.innerText = msg;
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            },
+
+            // --- Authentication ---
+            handleLogin: function(e) {
+                e.preventDefault();
+                const user = document.getElementById('login-user').value;
+                const pass = document.getElementById('login-pass').value;
+
+                // Find user
+                const foundUser = this.users.find(u => (u.username === user || u.mobile === user) && u.password === pass);
+
+                if (foundUser) {
+                    this.currentUser = foundUser;
+                    sessionStorage.setItem('currentUser', JSON.stringify(foundUser));
+                    this.showToast("सफलतापूर्वक लॉगिन हो गया!");
+                    this.updateNav();
+                    this.navTo('view-dashboard');
+                    this.renderDashboard();
+                } else {
+                    this.showToast("गलत यूजरनेम या पासवर्ड!");
+                }
+            },
+
+            handleRegister: function(e) {
+                e.preventDefault();
+                const user = document.getElementById('reg-user').value;
+                const mobile = document.getElementById('reg-mobile').value;
+                const pass = document.getElementById('reg-pass').value;
+
+                if(this.users.find(u => u.username === user)) {
+                    this.showToast("यूजरनेम पहले से मौजूद है!");
+                    return;
+                }
+
+                const newUser = { username: user, mobile: mobile, password: pass };
+                this.users.push(newUser);
+                localStorage.setItem('voterUsers', JSON.stringify(this.users));
+                
+                this.showToast("रजिस्ट्रेशन सफल! कृपया लॉगिन करें।");
+                this.navTo('view-login');
+            },
+
+            logout: function() {
+                this.currentUser = null;
+                sessionStorage.removeItem('currentUser');
+                this.showToast("लॉगआउट किया गया।");
+                this.updateNav();
+                this.navTo('view-landing');
+            },
+
+            // --- Application Wizard ---
+            startApplication: function() {
+                // Reset form
+                document.getElementById('apply-form').reset();
+                this.prevStep(1);
+                this.navTo('view-apply');
+            },
+
+            nextStep: function(stepNum) {
+                // Validation logic could be added here
+                document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+                document.getElementById(`step-${stepNum}`).style.display = 'block';
+
+                // Update indicators
+                document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+                document.getElementById(`step-ind-${stepNum}`).classList.add('active');
+                
+                // Mark previous as completed
+                if(stepNum > 1) document.getElementById(`step-ind-${stepNum-1}`).classList.add('completed');
+
+                // If review step, populate data
+                if (stepNum === 3) {
+                    document.getElementById('rev-name').innerText = document.getElementById('form-name').value;
+                    document.getElementById('rev-fname').innerText = document.getElementById('form-fname').value;
+                    document.getElementById('rev-addr').innerText = document.getElementById('form-address').value + ", " + document.getElementById('form-state').value;
+                }
+            },
+
+            prevStep: function(stepNum) {
+                document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+                document.getElementById(`step-${stepNum}`).style.display = 'block';
+                
+                document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+                document.getElementById(`step-ind-${stepNum}`).classList.add('active');
+            },
+
+            handleFilePreview: function(input, previewId) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const prev = document.getElementById(previewId);
+                        prev.style.display = 'block';
+                        prev.innerHTML = `<img src="${e.target.result}" style="height:100%; width:auto;">`;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            },
+
+            submitApplication: function() {
+                // Collect Data
+                const formData = {
+                    refId: 'REF-' + Math.floor(Math.random() * 100000),
+                    userId: this.currentUser.username,
+                    name: document.getElementById('form-name').value,
+                    fname: document.getElementById('form-fname').value,
+                    dob: document.getElementById('form-dob').value,
+                    gender: document.getElementById('form-gender').value,
+                    address: document.getElementById('form-address').value,
+                    state: document.getElementById('form-state').value,
+                    status: 'Pending Approval', // Pending -> Approved
+                    appliedDate: new Date().toLocaleDateString()
+                };
+
+                // Save to "Database"
+                this.applications.push(formData);
+                localStorage.setItem('voterApplications', JSON.stringify(this.applications));
+
+                this.showToast("आवेदन जमा हो गया! रेफरेंस ID: " + formData.refId);
+                this.renderDashboard();
+                this.navTo('view-dashboard');
+            },
+
+            // --- Dashboard & Card ---
+            renderDashboard: function() {
+                document.getElementById('dash-username').innerText = this.currentUser.username;
+                const area = document.getElementById('application-status-area');
+                
+                // Find application for this user
+                const myApp = this.applications.find(a => a.userId === this.currentUser.username);
+
+                if (myApp) {
+                    let color = myApp.status === 'Approved' ? 'green' : 'orange';
+                    area.innerHTML = `
+                        <h4>रेफरेंस ID: ${myApp.refId}</h4>
+                        <p>स्थिति: <strong style="color:${color}">${myApp.status}</strong></p>
+                        <p>आवेदन दिनांक: ${myApp.appliedDate}</p>
+                        ${myApp.status === 'Pending Approval' ? '<button class="btn btn-secondary" style="margin-top:5px; font-size:0.8rem" onclick="app.simulateApproval(\''+myApp.refId+'\')">Demo: Approve Now</button>' : ''}
+                    `;
+                    
+                    // If approved, prepare card data
+                    if (myApp.status === 'Approved') {
+                        this.prepareCard(myApp);
+                    }
+                } else {
+                    area.innerHTML = `
+                        <p>अभी तक कोई आवेदन नहीं।</p>
+                        <button class="btn btn-primary" style="margin-top: 10px;" onclick="app.startApplication()">नया आवेदन शुरू करें</button>
+                    `;
+                }
+            },
+
+            simulateApproval: function(refId) {
+                const idx = this.applications.findIndex(a => a.refId === refId);
+                if(idx > -1) {
+                    this.applications[idx].status = 'Approved';
+                    localStorage.setItem('voterApplications', JSON.stringify(this.applications));
+                    this.showToast("आवेदन स्वीकृत हो गया! अब कार्ड डाउनलोड करें।");
+                    this.renderDashboard();
+                }
+            },
+
+            prepareCard: function(data) {
+                document.getElementById('card-name').innerText = data.name.toUpperCase();
+                document.getElementById('card-fname').innerText = data.fname.toUpperCase();
+                document.getElementById('card-dob').innerText = data.dob;
+                document.getElementById('card-gender').innerText = data.gender;
+                document.getElementById('card-addr').innerText = data.address + ", " + data.state;
+                document.getElementById('card-id').innerText = "EPIC: " + data.refId.replace('REF', 'ECI');
+            },
+
+            // --- Tracking ---
+            trackApplication: function() {
+                const id = document.getElementById('track-id').value;
+                const resultBox = document.getElementById('track-result');
+                
+                if(!id) {
+                    this.showToast("कृपया ID दर्ज करें");
+                    return;
+                }
+
+                const appData = this.applications.find(a => a.refId === id);
+
+                if(appData) {
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = 'green';
+                    resultBox.innerHTML = `
+                        <strong>मिल गया!</strong><br>
+                        नाम: ${appData.name}<br>
+                        स्थिति: ${appData.status}
+                    `;
+                } else {
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = 'red';
+                    resultBox.innerText = "कोई आवेदन नहीं मिला। कृपया ID जांचें।";
+                }
+            }
+        };
+
+        // Initialize App on Load
+        window.onload = function() {
+            app.init();
+        };
+
+    </script>
+</body>
+</html>
