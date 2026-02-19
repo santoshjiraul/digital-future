@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Name | Data Science Portfolio</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Official portfolio of Your Name - Data Science, Python, Machine Learning Projects">
+    <meta name="keywords" content="Your Name, Data Science, Python Developer, Machine Learning, Portfolio">
+    <meta name="author" content="Your Name">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        header {
+            background: #1e3c72;
+            color: white;
+            padding: 30px;
+        }
+        section {
+            padding: 40px 20px;
+        }
+        .card {
+            background: white;
+            margin: 15px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        footer {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+        }
+        a {
+            text-decoration: none;
+            color: #1e3c72;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Your Name</h1>
+    <p>Data Science | Python | Machine Learning</p>
+</header>
+
+<section>
+    <h2>About Me</h2>
+    <div class="card">
+        <p>I am a passionate Data Science learner skilled in Python, Pandas, and Machine Learning.</p>
+    </div>
+</section>
+
+<section>
+    <h2>Projects</h2>
+
+    <div class="card">
+        <h3>Student Marks Analysis</h3>
+        <p>Performed data analysis using Python and Pandas with visualization.</p>
+    </div>
+
+    <div class="card">
+        <h3>House Price Prediction</h3>
+        <p>Built a Machine Learning model using Scikit-learn.</p>
+    </div>
+
+</section>
+
+<section>
+    <h2>Contact</h2>
+    <div class="card">
+        <p>Email: your@email.com</p>
+        <p>LinkedIn: <a href="#">Your LinkedIn Profile</a></p>
+        <p>GitHub: <a href="#">Your GitHub Profile</a></p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Your Name | All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
