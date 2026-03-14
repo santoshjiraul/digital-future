@@ -1,0 +1,75 @@
+%matplotlib inline
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+plt.style.use('seaborn-v0_8')
+
+# Company Data
+data = {
+    "Month": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+    "Sales": [12000,15000,18000,20000,22000,25000,27000,30000],
+    "Profit": [2000,3000,3500,4000,4500,5000,5500,6000]
+}
+
+df = pd.DataFrame(data)
+
+regions = ['North','South','East','West']
+region_sales = [50000,42000,38000,46000]
+
+products = ['Laptop','Mobile','Tablet','Accessories']
+product_sales = [60000,50000,25000,20000]
+
+employees = ['Emp1','Emp2','Emp3','Emp4','Emp5']
+emp_sales = [20000,25000,18000,22000,24000]
+
+plt.figure(figsize=(16,10))
+
+# 1 Sales Trend
+plt.subplot(2,4,1)
+plt.plot(df["Month"], df["Sales"], marker='o', color='blue')
+plt.title("Monthly Sales Trend")
+plt.xlabel("Month")
+plt.ylabel("Sales")
+
+# 2 Profit Trend
+plt.subplot(2,4,2)
+plt.plot(df["Month"], df["Profit"], marker='o', color='green')
+plt.title("Monthly Profit Trend")
+
+# 3 Region Sales
+plt.subplot(2,4,3)
+plt.bar(regions, region_sales, color=['red','blue','green','orange'])
+plt.title("Region Wise Sales")
+
+# 4 Product Share
+plt.subplot(2,4,4)
+plt.pie(product_sales, labels=products, autopct='%1.1f%%')
+plt.title("Product Sales Share")
+
+# 5 Sales vs Profit
+plt.subplot(2,4,5)
+plt.scatter(df["Sales"], df["Profit"], color='purple')
+plt.title("Sales vs Profit")
+
+# 6 Monthly Growth
+plt.subplot(2,4,6)
+growth = np.diff(df["Sales"])
+months = df["Month"][1:]
+plt.bar(months, growth, color='cyan')
+plt.title("Monthly Growth")
+
+# 7 Employee Performance
+plt.subplot(2,4,7)
+plt.barh(employees, emp_sales, color='magenta')
+plt.title("Employee Sales Performance")
+
+# 8 Region Comparison
+plt.subplot(2,4,8)
+plt.plot(regions, region_sales, marker='o', linestyle='--', color='black')
+plt.title("Region Comparison")
+
+plt.suptitle("Company Performance Dashboard", fontsize=20)
+
+plt.tight_layout()
+plt.show()
