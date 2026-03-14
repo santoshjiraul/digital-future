@@ -1,0 +1,96 @@
+%matplotlib inline
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_style("whitegrid")
+
+# -----------------------------
+# Sample Dataset
+# -----------------------------
+
+# Monthly data
+months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+revenue = [120000,140000,160000,175000,200000,220000,250000,270000,260000,300000,360000,420000]
+orders = [1200,1500,1800,2000,2300,2600,2900,3100,3000,3400,4000,4500]
+profit = [20000,23000,26000,29000,33000,36000,40000,43000,42000,47000,55000,65000]
+
+df = pd.DataFrame({
+    "Month": months,
+    "Revenue": revenue,
+    "Orders": orders,
+    "Profit": profit
+})
+
+# Company categories / products
+categories = ["Electronics","Fashion","Home","Beauty","Sports"]
+category_sales = [350000,220000,180000,150000,90000]
+
+# Regional sales
+regions = ["North America","Europe","Asia","South America","Africa"]
+region_sales = [450000,300000,350000,150000,80000]
+
+# Customer ratings (Netflix style)
+ratings = np.random.randint(1,6,200)
+
+# Employee / team performance (Tesla style)
+employees = ["Emp1","Emp2","Emp3","Emp4","Emp5"]
+emp_sales = [20000,25000,18000,22000,24000]
+
+# -----------------------------
+# Dashboard Layout
+# -----------------------------
+plt.figure(figsize=(20,12))
+
+# 1 Revenue Trend (Amazon style)
+plt.subplot(3,3,1)
+plt.plot(df["Month"], df["Revenue"], marker="o", color="blue")
+plt.title("Monthly Revenue Trend")
+
+# 2 Orders Trend (Amazon style)
+plt.subplot(3,3,2)
+plt.plot(df["Month"], df["Orders"], marker="o", color="green")
+plt.title("Monthly Orders Trend")
+
+# 3 Profit Trend
+plt.subplot(3,3,3)
+plt.plot(df["Month"], df["Profit"], marker="o", color="red")
+plt.title("Monthly Profit Trend")
+
+# 4 Category Sales (Amazon / Retail)
+plt.subplot(3,3,4)
+sns.barplot(x=categories, y=category_sales, palette="viridis")
+plt.title("Category Sales")
+plt.xticks(rotation=30)
+
+# 5 Regional Sales (Global / Tesla style)
+plt.subplot(3,3,5)
+plt.pie(region_sales, labels=regions, autopct="%1.1f%%")
+plt.title("Regional Sales Distribution")
+
+# 6 Revenue vs Profit (Analytics)
+plt.subplot(3,3,6)
+plt.scatter(df["Revenue"], df["Profit"], color="purple")
+plt.title("Revenue vs Profit")
+
+# 7 Monthly Growth
+plt.subplot(3,3,7)
+growth = np.diff(df["Revenue"])
+months_growth = months[1:]
+plt.bar(months_growth, growth, color="orange")
+plt.title("Monthly Revenue Growth")
+
+# 8 Customer Rating Distribution (Netflix style)
+plt.subplot(3,3,8)
+sns.histplot(ratings, bins=5, kde=True, color="cyan")
+plt.title("Customer Rating Distribution")
+
+# 9 Employee Performance (Tesla style)
+plt.subplot(3,3,9)
+plt.barh(employees, emp_sales, color="magenta")
+plt.title("Employee Performance")
+
+plt.suptitle("All-in-One Company Dashboard", fontsize=20)
+plt.tight_layout(rect=[0,0,1,0.95])
+plt.show()
