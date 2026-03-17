@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<title>Santosh Portfolio | Data Analyst</title>
+<meta name="description" content="Santosh Kumar Data Analyst Portfolio - Python, Excel, Power BI Projects">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: #1e293b;
+    position: sticky;
+    top: 0;
+}
+
+nav a {
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: #38bdf8;
+}
+
+.hero {
+    text-align: center;
+    padding: 120px 20px;
+    background: linear-gradient(to right, #3b82f6, #06b6d4);
+}
+
+.hero h1 {
+    font-size: 40px;
+}
+
+button {
+    padding: 12px 25px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 250px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: black;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Santosh Portfolio</h2>
+    <nav>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<div class="hero">
+    <h1>Hello, I'm Santosh 👋</h1>
+    <p>Data Analyst | Python | Excel | Power BI</p>
+    <button onclick="scrollToContact()">Hire Me</button>
+</div>
+
+<section id="about">
+    <h2>About Me</h2>
+    <p>I am a passionate Data Analyst skilled in Python, Excel, Power BI and Dashboard Development.</p>
+</section>
+
+<section id="projects">
+    <h2>My Projects</h2>
+
+    <div class="card">
+        <h3>Amazon Sales Dashboard</h3>
+        <p>Power BI dashboard project</p>
+    </div>
+
+    <div class="card">
+        <h3>CSV to Excel Tool</h3>
+        <p>Python automation project</p>
+    </div>
+
+</section>
+
+<section id="contact">
+    <h2>Contact Me</h2>
+    <p>Email: santosh@email.com</p>
+</section>
+
+<footer>
+    <p>© 2026 Santosh Portfolio</p>
+</footer>
+
+<script>
+function scrollToContact() {
+    document.getElementById("contact").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+</script>
+
+</body>
+</html>
