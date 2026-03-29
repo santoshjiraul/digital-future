@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="SANTOSH KUMAR YADAV">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart - Online Shopping Site</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f1f3f6;
+            color: #212121;
+        }
+        
+        .container {
+            max-width: 1248px;
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #2874f0;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.16);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .logo img {
+            width: 75px;
+            height: 20px;
+        }
+        
+        .logo-text {
+            font-size: 11px;
+            font-style: italic;
+            margin-left: 5px;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: none;
+            border-radius: 2px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2874f0;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .login-btn {
+            background-color: white;
+            color: #2874f0;
+            border: none;
+            padding: 8px 30px;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .login-btn:hover {
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+        }
+        
+        .header-link {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            margin-right: 10px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .header-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-link i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+        
+        .cart-count {
+            background-color: #ff6161;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+        
+        /* Navigation */
+        .navigation {
+            background-color: white;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.16);
+            position: sticky;
+            top: 56px;
+            z-index: 999;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            padding: 8px 0;
+        }
+        
+        .nav-item {
+            margin-right: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            color: #2874f0;
+        }
+        
+        .nav-item img {
+            width: 64px;
+            height: 64px;
+            margin-right: 10px;
+        }
+        
+        .nav-item-text {
+            font-size: 14px;
+        }
+        
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(to bottom, #f1f3f6, #e9ecef);
+            padding: 8px 0;
+        }
+        
+        .banner-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .banner-left {
+            flex: 1;
+            background-color: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .banner-right {
+            width: 230px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .banner-right-item {
+            background-color: white;
+            padding: 8px;
+            border-radius: 4px;
+            height: 136px;
+        }
+        
+        .banner-right-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        /* Category Section */
+        .category-section {
+            padding: 20px 0;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+        }
+        
+        .category-item {
+            background-color: white;
+            border-radius: 4px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .category-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,.1);
+        }
+        
+        .category-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+        }
+        
+        .category-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Product Section */
+        .product-section {
+            padding: 20px 0;
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 4px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        
+        .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #212121;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .rating-stars {
+            background-color: #388e3c;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .rating-count {
+            color: #878787;
+            font-size: 12px;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #878787;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        
+        .discount {
+            color: #388e3c;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .add-to-cart {
+            background-color: #ff9f00;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #f08800;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff6161;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #172337;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: #878787;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-column li:hover {
+            color: #2874f0;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #454d5e;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-bottom-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            width: 80px;
+            height: 20px;
+            margin-right: 15px;
+        }
+        
+        .footer-bottom-text {
+            font-size: 14px;
+            color: #878787;
+        }
+        
+        .footer-bottom-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #454d5e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: #2874f0;
+        }
+        
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 8px rgba(0,0,0,.1);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            background-color: #2874f0;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .cart-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+        }
+        
+        .quantity-btn {
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .quantity {
+            width: 40px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: #2874f0;
+            font-size: 14px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        
+        .cart-footer {
+            padding: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .checkout-btn {
+            background-color: #fb641b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 2px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #e85a19;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-cart-icon {
+            font-size: 80px;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+        
+        .empty-cart-text {
+            font-size: 18px;
+            color: #878787;
+            margin-bottom: 20px;
+        }
+        
+        .shop-now-btn {
+            background-color: #2874f0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 2px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        /* Auth Modal */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .auth-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .auth-container {
+            background-color: white;
+            width: 400px;
+            border-radius: 4px;
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .auth-modal.active .auth-container {
+            transform: scale(1);
+        }
+        
+        .auth-header {
+            background-color: #2874f0;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .auth-header h2 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .auth-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #878787;
+            transition: color 0.2s ease, border-bottom 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .auth-tab.active {
+            color: #2874f0;
+            border-bottom-color: #2874f0;
+        }
+        
+        .auth-form {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #2874f0;
+        }
+        
+        .auth-btn {
+            background-color: #fb641b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 2px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .auth-btn:hover {
+            background-color: #e85a19;
+        }
+        
+        .auth-terms {
+            font-size: 12px;
+            color: #878787;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .auth-terms a {
+            color: #2874f0;
+            text-decoration: none;
+        }
+        
+        .close-auth {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #388e3c;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+            display: flex;
+            align-items: center;
+            z-index: 4000;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .notification-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .notification-message {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .banner-right {
+                display: none;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .logo {
+                margin-right: 10px;
+            }
+            
+            .search-bar {
+                order: 3;
+                width: 100%;
+                margin: 10px 0 0;
+            }
+            
+            .header-actions {
+                margin-left: auto;
+            }
+            
+            .login-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .nav-menu {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .nav-item {
+                flex-shrink: 0;
+                margin-right: 15px;
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .auth-container {
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .footer-bottom-right {
+                margin-top: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://i.ibb.co/7KgY3Rq/flipkart-logo.png" alt="Flipkart">
+                    <span class="logo-text">STAR Explore <span style="color: #ffe500;">Plus</span></span>
+                </div>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search for products, brands and more">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="login-btn" id="loginBtn">Login</button>
+                    <a href="#" class="header-link">
+                        <i class="fas fa-store"></i>
+                        Become a Seller
+                    </a>
+                    <a href="#" class="header-link">
+                        <i class="fas fa-ellipsis-v"></i>
+                        More
+                    </a>
+                    <a href="#" class="header-link" id="cartLink">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+        <div class="container">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/0jXnX2q/grocery.png" alt="Grocery">
+                    <span class="nav-item-text">Grocery</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/5K5vZq0/mobiles.png" alt="Mobiles">
+                    <span class="nav-item-text">Mobiles</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/8s1dQfK/fashion.png" alt="Fashion">
+                    <span class="nav-item-text">Fashion</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/7QzK3Cx/electronics.png" alt="Electronics">
+                    <span class="nav-item-text">Electronics</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/5WzGqQc/home.png" alt="Home">
+                    <span class="nav-item-text">Home</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/2Mf1RZj/appliances.png" alt="Appliances">
+                    <span class="nav-item-text">Appliances</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/3s1qKvV/travel.png" alt="Travel">
+                    <span class="nav-item-text">Travel</span>
+                </li>
+                <li class="nav-item">
+                    <img src="https://i.ibb.co/0jXnX2q/grocery.png" alt="Beauty">
+                    <span class="nav-item-text">Beauty, Toys & More</span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="container">
+            <div class="banner-container">
+                <div class="banner-left">
+                    <img src="https://i.ibb.co/0jXnX2q/banner1.jpg" alt="Banner" class="banner-image">
+                </div>
+                <div class="banner-right">
+                    <div class="banner-right-item">
+                        <img src="https://i.ibb.co/5K5vZq0/banner2.jpg" alt="Banner" class="banner-right-image">
+                    </div>
+                    <div class="banner-right-item">
+                        <img src="https://i.ibb.co/8s1dQfK/banner3.jpg" alt="Banner" class="banner-right-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Section -->
+    <section class="category-section">
+        <div class="container">
+            <h2 class="section-title">Top Categories</h2>
+            <div class="category-grid">
+                <div class="category-item">
+                    <img src="https://i.ibb.co/0jXnX2q/grocery.png" alt="Grocery" class="category-icon">
+                    <div class="category-name">Grocery</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/5K5vZq0/mobiles.png" alt="Mobiles" class="category-icon">
+                    <div class="category-name">Mobiles</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/8s1dQfK/fashion.png" alt="Fashion" class="category-icon">
+                    <div class="category-name">Fashion</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/7QzK3Cx/electronics.png" alt="Electronics" class="category-icon">
+                    <div class="category-name">Electronics</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/5WzGqQc/home.png" alt="Home" class="category-icon">
+                    <div class="category-name">Home</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/2Mf1RZj/appliances.png" alt="Appliances" class="category-icon">
+                    <div class="category-name">Appliances</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/3s1qKvV/travel.png" alt="Travel" class="category-icon">
+                    <div class="category-name">Travel</div>
+                </div>
+                <div class="category-item">
+                    <img src="https://i.ibb.co/0jXnX2q/grocery.png" alt="Beauty" class="category-icon">
+                    <div class="category-name">Beauty</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="product-section">
+        <div class="container">
+            <div class="product-header">
+                <h2 class="section-title">Deals of the Day</h2>
+                <button class="btn">View All</button>
+            </div>
+            <div class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <span class="product-badge">Bestseller</span>
+                    <img src="https://i.ibb.co/0jXnX2q/product1.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Apple iPhone 13 (128GB) - Midnight</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.5 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(12,345)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹59,999
+                        <span class="original-price">₹69,900</span>
+                        <span class="discount">14% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/5K5vZq0/product2.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Samsung Galaxy S21 FE 5G (256GB) - Graphite</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.3 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(8,765)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹39,999
+                        <span class="original-price">₹49,999</span>
+                        <span class="discount">20% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/8s1dQfK/product3.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">OnePlus Nord 2T 5G (128GB) - Gray Shadow</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.4 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(15,432)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹28,999
+                        <span class="original-price">₹34,999</span>
+                        <span class="discount">17% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/7QzK3Cx/product4.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Mi 11X Pro 5G (128GB) - Cosmic Black</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.2 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(9,876)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹29,999
+                        <span class="original-price">₹36,999</span>
+                        <span class="discount">19% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/5WzGqQc/product5.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Realme GT Neo 2 (128GB) - Neo Black</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.1 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(7,654)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹24,999
+                        <span class="original-price">₹31,999</span>
+                        <span class="discount">22% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section 2 -->
+    <section class="product-section">
+        <div class="container">
+            <div class="product-header">
+                <h2 class="section-title">Top Picks For You</h2>
+                <button class="btn">View All</button>
+            </div>
+            <div class="product-grid">
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/2Mf1RZj/product6.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Apple MacBook Air M1 (256GB) - Space Gray</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.7 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(23,456)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹79,900
+                        <span class="original-price">₹92,900</span>
+                        <span class="discount">14% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 7 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/3s1qKvV/product7.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Dell Inspiron 15 (512GB SSD) - Platinum Silver</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.0 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(5,432)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹42,990
+                        <span class="original-price">₹52,990</span>
+                        <span class="discount">19% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 8 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/0jXnX2q/product8.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">HP Pavilion 14 (256GB SSD) - Natural Silver</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.2 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(6,789)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹49,990
+                        <span class="original-price">₹59,990</span>
+                        <span class="discount">17% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 9 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/5K5vZq0/product9.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">Lenovo IdeaPad Slim 3 (256GB SSD) - Platinum Grey</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">3.9 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(4,321)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹35,990
+                        <span class="original-price">₹45,990</span>
+                        <span class="discount">22% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+                
+                <!-- Product 10 -->
+                <div class="product-card">
+                    <img src="https://i.ibb.co/8s1dQfK/product10.jpg" alt="Product" class="product-image">
+                    <h3 class="product-title">ASUS VivoBook 14 (512GB SSD) - Transparent Silver</h3>
+                    <div class="product-rating">
+                        <span class="rating-stars">4.1 <i class="fas fa-star"></i></span>
+                        <span class="rating-count">(5,678)</span>
+                    </div>
+                    <div class="product-price">
+                        ₹41,990
+                        <span class="original-price">₹51,990</span>
+                        <span class="discount">19% off</span>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About</h3>
+                    <ul>
+                        <li>Contact Us</li>
+                        <li>About Us</li>
+                        <li>Careers</li>
+                        <li>GOOGLE Stories</li>
+                        <li>Press</li>
+                        <li>GOOFLE Wholesale</li>
+                        <li>Corporate Information</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Help</h3>
+                    <ul>
+                        <li>Payments</li>
+                        <li>Shipping</li>
+                        <li>Cancellation & Returns</li>
+                        <li>FAQ</li>
+                        <li>Report Infringement</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Policy</h3>
+                    <ul>
+                        <li>Return Policy</li>
+                        <li>Terms Of Use</li>
+                        <li>Security</li>
+                        <li>Privacy</li>
+                        <li>Sitemap</li>
+                        <li>EPR Compliance</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Social</h3>
+                    <ul>
+                        <li>Facebook</li>
+                        <li>Twitter</li>
+                        <li>YouTube</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Mail Us:</h3>
+                    <ul>
+                        <li>GOOGLE Internet Private Limited,</li>
+                        <li>Buildings Alyssa, Begonia &</li>
+                        <li>Clove Embassy Tech Village,</li>
+                        <li>Outer Ring Road, Devarabeesanahalli Village,</li>
+                        <li>Bengaluru, 560103,</li>
+                        <li>Karnataka, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-left">
+                    <img src="https://i.ibb.co/7KgY3Rq/flipkart-logo.png" alt="Flipkart" class="footer-logo">
+                    <span class="footer-bottom-text">© 2007-2023 GOOGLE.com</span>
+                </div>
+                <div class="footer-bottom-right">
+                    <div class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>My Cart</h2>
+            <button class="close-cart" id="closeCart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="empty-cart-text">Your cart is empty!</div>
+                <button class="shop-now-btn">Shop Now</button>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <button class="checkout-btn">Place Order</button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="close-auth" id="closeAuth">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-header">
+                <h2>Login</h2>
+                <p>Get access to your Orders, Wishlist and Recommendations</p>
+            </div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Login</div>
+                <div class="auth-tab" id="registerTab">Register</div>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Enter Email/Mobile number</label>
+                    <input type="text" id="loginEmail" placeholder="Enter Email/Mobile number" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Enter Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter Password" required>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+                <p class="auth-terms">By continuing, you agree to Flipkart's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+            </form>
+            <form class="auth-form" id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" placeholder="Enter Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email/Mobile number</label>
+                    <input type="text" id="registerEmail" placeholder="Enter Email/Mobile number" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Enter Password" required>
+                </div>
+                <button type="submit" class="auth-btn">Register</button>
+                <p class="auth-terms">By continuing, you agree to Flipkart's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="notification-icon fas fa-check-circle"></i>
+        <div class="notification-message">Product added to cart!</div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const cartLink = document.getElementById('cartLink');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const closeCart = document.getElementById('closeCart');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const authModal = document.getElementById('authModal');
+        const closeAuth = document.getElementById('closeAuth');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.querySelector('.notification-message');
+        
+        // Cart State
+        let cart = [];
+        let isLoggedIn = false;
+        
+        // Event Listeners
+        loginBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+        });
+        
+        cartLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            cartSidebar.classList.add('active');
+        });
+        
+        closeCart.addEventListener('click', () => {
+            cartSidebar.classList.remove('active');
+        });
+        
+        closeAuth.addEventListener('click', () => {
+            authModal.classList.remove('active');
+        });
+        
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        });
+        
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                isLoggedIn = true;
+                loginBtn.textContent = 'Logout';
+                authModal.classList.remove('active');
+                showNotification('Login successful!');
+            }
+        });
+        
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (name && email && password) {
+                isLoggedIn = true;
+                loginBtn.textContent = 'Logout';
+                authModal.classList.remove('active');
+                showNotification('Registration successful!');
+            }
+        });
+        
+        // Add to Cart
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const productCard = button.closest('.product-card');
+                const productTitle = productCard.querySelector('.product-title').textContent;
+                const productPrice = productCard.querySelector('.product-price').textContent;
+                const productImage = productCard.querySelector('.product-image').src;
+                
+                const price = parseFloat(productPrice.replace('₹', '').replace(',', ''));
+                
+                const existingProduct = cart.find(item => item.title === productTitle);
+                
+                if (existingProduct) {
+                    existingProduct.quantity += 1;
+                } else {
+                    cart.push({
+                        title: productTitle,
+                        price: price,
+                        image: productImage,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+                showNotification('Product added to cart!');
+            });
+        });
+        
+        // Update Cart
+        function updateCart() {
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="empty-cart-text">Your cart is empty!</div>
+                        <button class="shop-now-btn">Shop Now</button>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-price">₹${item.price.toFixed(2)}</div>
+                            <div class="cart-item-actions">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn decrease">-</button>
+                                    <span class="quantity">${item.quantity}</span>
+                                    <button class="quantity-btn increase">+</button>
+                                </div>
+                                <button class="remove-item">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add event listeners to quantity controls
+                document.querySelectorAll('.decrease').forEach((button, index) => {
+                    button.addEventListener('click', () => {
+                        if (cart[index].quantity > 1) {
+                            cart[index].quantity -= 1;
+                        } else {
+                            cart.splice(index, 1);
+                        }
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.increase').forEach((button, index) => {
+                    button.addEventListener('click', () => {
+                        cart[index].quantity += 1;
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach((button, index) => {
+                    button.addEventListener('click', () => {
+                        cart.splice(index, 1);
+                        updateCart();
+                        showNotification('Product removed from cart!');
+                    });
+                });
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `₹${total.toFixed(2)}`;
+        }
+        
+        // Show Notification
+        function showNotification(message) {
+            notificationMessage.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
