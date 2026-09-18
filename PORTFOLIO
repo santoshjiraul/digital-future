@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Santosh Kumar Yadav | Data Analyst</title>
+
+  <meta name="description"
+        content="Santosh Kumar Yadav - Data Analyst Portfolio | Python, SQL, Excel, Power BI, Tableau">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1120;
+      color: #e5e7eb;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1150px;
+      margin: auto;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(11, 17, 32, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .nav-container {
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 70px;
+      background:
+        radial-gradient(circle at top right, #12385a 0, transparent 35%),
+        radial-gradient(circle at bottom left, #10294a 0, transparent 35%);
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .small-title {
+      color: #38bdf8;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 7vw, 78px);
+      line-height: 1.05;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #38bdf8;
+    }
+
+    .hero h2 {
+      font-size: 25px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: #94a3b8;
+      font-size: 17px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 13px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+      display: inline-block;
+    }
+
+    .primary {
+      background: #38bdf8;
+      color: #07111f;
+    }
+
+    .primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(56,189,248,0.25);
+    }
+
+    .secondary {
+      border: 1px solid #334155;
+      color: white;
+    }
+
+    .secondary:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #243244;
+      padding: 35px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .profile-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: auto;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 55px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .profile-card h3 {
+      margin-top: 20px;
+      font-size: 25px;
+    }
+
+    .profile-card p {
+      color: #94a3b8;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #94a3b8;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      padding: 30px;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: #38bdf8;
+    }
+
+    .card h3 {
+      margin-bottom: 15px;
+      color: #38bdf8;
+    }
+
+    .card p {
+      color: #94a3b8;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .skill {
+      text-align: center;
+      padding: 25px 15px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    .skill:hover {
+      transform: translateY(-5px);
+      border-color: #38bdf8;
+    }
+
+    .skill .icon {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .skill h3 {
+      margin-bottom: 5px;
+    }
+
+    .skill p {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .project {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    .project:hover {
+      transform: translateY(-8px);
+      border-color: #38bdf8;
+    }
+
+    .project-top {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 55px;
+      background: linear-gradient(135deg, #102a43, #172554);
+    }
+
+    .project-content {
+      padding: 25px;
+    }
+
+    .project-content h3 {
+      margin-bottom: 10px;
+    }
+
+    .project-content p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: #1e293b;
+      color: #7dd3fc;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* CERTIFICATIONS */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .cert {
+      background: #111827;
+      border: 1px solid #1f2937;
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    .cert h3 {
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .cert p {
+      color: #94a3b8;
+    }
+
+    /* DASHBOARD */
+    .dashboard-box {
+      background: #111827;
+      border: 1px solid #1f2937;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .dashboard-box h3 {
+      font-size: 27px;
+      margin-bottom: 15px;
+    }
+
+    .dashboard-box p {
+      color: #94a3b8;
+      margin-bottom: 25px;
+    }
+
+    /* CONTACT */
+    .contact-box {
+      max-width: 750px;
+      margin: auto;
+      text-align: center;
+      background: #111827;
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid #1f2937;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 25px;
+    }
+
+    .contact-link {
+      padding: 12px 18px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .contact-link:hover {
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid #1e293b;
+      padding: 30px 0;
+      text-align: center;
+      color: #64748b;
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero-content,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid,
+      .cert-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        text-align: center;
+      }
+
+      .buttons {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .skills-grid,
+      .cert-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .profile-card {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="container nav-container">
+
+      <div class="logo">SKY.</div>
+
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+    </div>
+  </nav>
+
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+
+    <div class="container hero-content">
+
+      <div>
+
+        <div class="small-title">
+          👋 Hello, I'm
+        </div>
+
+        <h1>
+          Santosh Kumar <span>Yadav</span>
+        </h1>
+
+        <h2>
+          Data Analyst
+        </h2>
+
+        <p>
+          I transform raw data into meaningful insights using
+          Python, SQL, Excel, Power BI and Tableau.
+          I enjoy solving business problems through data.
+        </p>
+
+        <div class="buttons">
+
+          <a href="#projects" class="btn primary">
+            View Projects
+          </a>
+
+          <a href="#contact" class="btn secondary">
+            Contact Me
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <div class="profile-card">
+
+        <div class="profile-circle">
+          SK
+        </div>
+
+        <h3>Santosh Kumar Yadav</h3>
+
+        <p>
+          Data Analyst | Python | SQL | Power BI | Excel | Tableau
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ABOUT -->
+  <section id="about">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>About Me</h2>
+
+        <p>
+          A data-focused learner passionate about analytics
+        </p>
+
+      </div>
+
+
+      <div class="about-grid">
+
+        <div class="card">
+
+          <h3>Who I Am</h3>
+
+          <p>
+            I am Santosh Kumar Yadav, a Computer Science and
+            Engineering student interested in Data Analytics.
+            I like working with data, creating dashboards and
+            finding useful patterns from datasets.
+          </p>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>What I Do</h3>
+
+          <p>
+            I work with Excel, SQL, Python, Power BI and Tableau
+            to clean data, analyze information and create
+            interactive visualizations for better decision making.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SKILLS -->
+  <section id="skills">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>My Skills</h2>
+
+        <p>Tools and technologies I work with</p>
+
+      </div>
+
+
+      <div class="skills-grid">
+
+        <div class="skill">
+          <div class="icon">🐍</div>
+          <h3>Python</h3>
+          <p>Pandas • NumPy • Matplotlib</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">🗄️</div>
+          <h3>SQL</h3>
+          <p>Queries • Joins • Aggregation</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">📊</div>
+          <h3>Power BI</h3>
+          <p>Dashboards • DAX • Visualization</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">📗</div>
+          <h3>Excel</h3>
+          <p>Pivot Tables • Charts • Analysis</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">📈</div>
+          <h3>Tableau</h3>
+          <p>Interactive Data Visualization</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">☕</div>
+          <h3>Java</h3>
+          <p>Core Java • OOP Basics</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">🌐</div>
+          <h3>Web</h3>
+          <p>HTML • CSS • JavaScript</p>
+        </div>
+
+
+        <div class="skill">
+          <div class="icon">☁️</div>
+          <h3>Cloud</h3>
+          <p>Cloud Computing Basics</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PROJECTS -->
+  <section id="projects">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>Featured Projects</h2>
+
+        <p>My data analytics and technical projects</p>
+
+      </div>
+
+
+      <div class="projects-grid">
+
+
+        <!-- PROJECT 1 -->
+        <div class="project">
+
+          <div class="project-top">
+            💳
+          </div>
+
+          <div class="project-content">
+
+            <h3>Credit Card Fraud Detection</h3>
+
+            <p>
+              An analytical project focused on identifying
+              suspicious transactions and understanding fraud
+              patterns using data analysis and machine learning.
+            </p>
+
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">ML</span>
+              <span class="tag">Data Analysis</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PROJECT 2 -->
+        <div class="project">
+
+          <div class="project-top">
+            🤖
+          </div>
+
+          <div class="project-content">
+
+            <h3>AI Chatbot</h3>
+
+            <p>
+              A chatbot project designed to answer user queries
+              and provide automated responses using artificial
+              intelligence concepts.
+            </p>
+
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">AI</span>
+              <span class="tag">NLP</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PROJECT 3 -->
+        <div class="project">
+
+          <div class="project-top">
+            📊
+          </div>
+
+          <div class="project-content">
+
+            <h3>Sales Analytics Dashboard</h3>
+
+            <p>
+              Interactive dashboard for analyzing sales,
+              revenue, products and business performance.
+            </p>
+
+            <div class="tags">
+              <span class="tag">Excel</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">Tableau</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD -->
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>Data Visualization</h2>
+
+        <p>Analytics dashboards and reports</p>
+
+      </div>
+
+
+      <div class="dashboard-box">
+
+        <h3>📊 Tableau / Power BI Dashboard</h3>
+
+        <p>
+          Interactive dashboards created to convert raw data
+          into clear and actionable business insights.
+        </p>
+
+        <!-- Replace this link with your Tableau Public URL -->
+        <a
+          href="https://public.tableau.com/"
+          target="_blank"
+          class="btn primary">
+          View Tableau Dashboard
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>Certifications</h2>
+
+        <p>Courses and certifications</p>
+
+      </div>
+
+
+      <div class="cert-grid">
+
+        <div class="cert">
+          <h3>🐍 Python</h3>
+          <p>Scaler</p>
+        </div>
+
+        <div class="cert">
+          <h3>☕ Java</h3>
+          <p>HackerRank</p>
+        </div>
+
+        <div class="cert">
+          <h3>🗄️ SQL</h3>
+          <p>HackerRank</p>
+        </div>
+
+        <div class="cert">
+          <h3>📗 Excel</h3>
+          <p>HackerRank</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CONTACT -->
+  <section id="contact">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>Let's Connect</h2>
+
+        <p>Have a project or opportunity? Let's talk.</p>
+
+      </div>
+
+
+      <div class="contact-box">
+
+        <h3>Santosh Kumar Yadav</h3>
+
+        <p>
+          Data Analyst | CSE Student
+        </p>
+
+
+        <div class="contact-links">
+
+          <a
+            class="contact-link"
+            href="mailto:santoshjiraul0786@gmail.com">
+            📧 Email
+          </a>
+
+
+          <!-- Replace # with your actual LinkedIn URL -->
+          <a
+            class="contact-link"
+            href="#"
+            target="_blank">
+            💼 LinkedIn
+          </a>
+
+
+          <!-- Replace # with your actual GitHub URL -->
+          <a
+            class="contact-link"
+            href="#"
+            target="_blank">
+            🐙 GitHub
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <div class="container">
+
+      <p>
+        © 2026 Santosh Kumar Yadav. All Rights Reserved.
+      </p>
+
+    </div>
+
+  </footer>
+
+
+</body>
+</html>
